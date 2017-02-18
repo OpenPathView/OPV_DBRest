@@ -84,6 +84,6 @@ def makeAndRun(db_location, debug=False):
     if db_location and db_location != "in-memory":
         app.config['SQLALCHEMY_DATABASE_URI'] = db_location
     db.init_app(app)
-    db.create_all()
+    with app.test_request_context():
+        db.create_all()
     app.run()
-

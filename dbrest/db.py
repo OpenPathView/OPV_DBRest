@@ -1,9 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 
-from . import app
-
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 class Campaign(db.Model):
     id_campaign = db.Column(db.Integer, primary_key=True)
@@ -64,4 +62,3 @@ class Tile(db.Model):
 
     id_panorama = db.Column(db.Integer, db.ForeignKey('panorama.id_panorama'), nullable=False)
     panorama = db.relationship(Panorama, uselist=False, backref=backref('tiles', lazy='dynamic'), foreign_keys=[id_panorama])
-
