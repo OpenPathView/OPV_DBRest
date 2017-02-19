@@ -40,7 +40,7 @@ class Cp(db.Model):
     nb_cp = db.Column(db.Integer, nullable=False)
     stichable = db.Column(db.Boolean, nullable=False)
     optimized = db.Column(db.Boolean, default=False)
-    pto_dir = db.Column(db.String(100), nullable=True)
+    pto_dir = db.Column(db.String(100), nullable=False)
 
     id_lot = db.Column(db.Integer, db.ForeignKey('lot.id_lot'), nullable=False)
     lot = db.relationship(Lot, backref=backref('cps', lazy='dynamic'))
