@@ -37,8 +37,8 @@ class Lot(db.Model):
 class Cp(db.Model):
     id_cp = db.Column(db.Integer, primary_key=True)
     search_algo_version = db.Column(db.String(20), nullable=False)
-    nb_cp = db.Column(db.Integer, nullable=False)
-    stichable = db.Column(db.Boolean, nullable=False)
+    nb_cp = db.Column(db.Integer, nullable=True)
+    stichable = db.Column(db.Boolean, nullable=True)
     optimized = db.Column(db.Boolean, default=False)
     pto_dir = db.Column(db.String(100), nullable=False)
 
