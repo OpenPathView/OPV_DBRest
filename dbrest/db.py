@@ -32,7 +32,7 @@ class Lot(db.Model):
     campaign = db.relationship('Campaign', backref=backref('lots', lazy='dynamic'), foreign_keys=[id_campaign])
 
     id_tile = db.Column(db.Integer, db.ForeignKey('tile.id_tile'))
-    tile = db.relationship('Tile', uselist=False, foreign_keys=[id_tile])
+    tile = db.relationship('Tile', uselist=False, backref=backref('lot', lazy='dynamic'), foreign_keys=[id_tile])
 
 class Cp(db.Model):
     id_cp = db.Column(db.Integer, primary_key=True)

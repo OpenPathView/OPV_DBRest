@@ -30,6 +30,7 @@ class LotRessource(ModelResource):
     class Schema:
         campaign = fields.ToOne('campaign')
         sensors = fields.ToOne('sensors')
+        tile = fields.ToOne('tile')
 
 class ParonamaRessource(ModelResource):
     tiles = Relation('tile')
