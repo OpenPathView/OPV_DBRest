@@ -1,12 +1,14 @@
 from flask import Flask, request
 from flask_potion.routes import Relation
 from flask_potion import Api, fields, ModelResource
+from flask_cors import CORS
 
 from .db import *
 
 dbg = False
 
 app = Flask(__name__)
+CORS(app, expose_headers='Link')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 class SensorsRessource(ModelResource):
