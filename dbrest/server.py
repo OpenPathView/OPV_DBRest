@@ -32,7 +32,7 @@ class LotRessource(ModelResource):
     class Schema:
         campaign = fields.ToOne('campaign')
         sensors = fields.ToOne('sensors')
-        tile = fields.ToOne('tile')
+        tile = fields.ToOne('tile', nullable=True)
 
 class ParonamaRessource(ModelResource):
     tiles = Relation('tile')
