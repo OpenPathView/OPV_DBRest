@@ -10,7 +10,14 @@ setup(
     author_email="",
     description="The OPV DB rest api ",
     long_description=open('README.md').read(),
-    # install_requires= ,
+    install_requires= [
+        "docopt",
+        "Flask-Potion",
+        "Flask-SQLAlchemy",
+        "SQLAlchemy",
+        "psycopg2",
+        "Flask-Cors"
+        ],
     # Active la prise en compte du fichier MANIFEST.in
     include_package_data=False,
     url='https://github.com/OpenPathView/OPV_DBRest',
