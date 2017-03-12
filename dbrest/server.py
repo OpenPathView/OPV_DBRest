@@ -81,7 +81,7 @@ def shutdown():
         return 'Server shutting down...'
     return "You can't shut the server down"
 
-def makeAndRun(db_location, debug=False):
+def makeAndRun(db_location, host, debug=False):
     global dbg
     dbg = debug
     if db_location and db_location != "in-memory":
@@ -89,4 +89,4 @@ def makeAndRun(db_location, debug=False):
     db.init_app(app)
     with app.test_request_context():
         db.create_all()
-    app.run()
+    app.run(host=host)
