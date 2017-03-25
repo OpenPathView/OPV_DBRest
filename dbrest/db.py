@@ -1,13 +1,43 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, BaseQuery
 from sqlalchemy.orm import backref
 
-db = SQLAlchemy()
+
+class HackedQuery(BaseQuery):
+    def filter(self, *criterion):
+        ncriterion = []
+        for crit in criterion:
+            ncrits = []
+
+            col = crit.left
+            val = crit.right.effective_value
+
+            primary_key_cols = col.table.primary_key
+            if col.primary_key and len(primary_key_cols) >= 2:
+                vals = val.split("-")
+
+                if len(vals) != len(primary_key_cols):
+                    return super().filter(col == 1, col == 0)  # Should be a 404
+
+                for v, primary_key_col in zip(vals, primary_key_cols):
+                    ncrits.append(primary_key_col == v)
+
+            if ncrits:
+                ncriterion += ncrits
+            else:
+                ncriterion.append(crit)
+
+        return super().filter(*ncriterion)
+
+
+db = SQLAlchemy(query_class=HackedQuery)
 
 class Campaign(db.Model):
     id_campaign = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(50), primary_key=True)
     decription = db.Column(db.String(150))
     id_rederbro = db.Column(db.Integer)
+
+    db.UniqueConstraint(id_campaign, name)
 
 class Sensors(db.Model):
     id_sensors = db.Column(db.Integer, primary_key=True)
