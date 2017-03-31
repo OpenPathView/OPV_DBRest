@@ -1,6 +1,4 @@
 docopt==0.6.2
-Flask-Potion==0.13.0
-Flask-SQLAlchemy==2.1
-SQLAlchemy==1.1.5
-psycopg2==2.6.2
-Flask-Cors==3.0.2
+Flask-Restless==0.17.0
+Flask-SQLAlchemy==2.2
+psycopg2==2.7
