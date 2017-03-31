@@ -1,46 +1,28 @@
-from flask_sqlalchemy import SQLAlchemy, BaseQuery
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 
+from .helper import CompositePrimaryKeyHackedQuery, get_malette_id
 
-class HackedQuery(BaseQuery):
-    def filter(self, *criterion):
-        ncriterion = []
-        for crit in criterion:
-            ncrits = []
+db = SQLAlchemy(query_class=CompositePrimaryKeyHackedQuery)
 
-            col = crit.left
-            val = crit.right.effective_value
-
-            primary_key_cols = col.table.primary_key
-            if col.primary_key and len(primary_key_cols) >= 2:
-                vals = val.split("-")
-
-                if len(vals) != len(primary_key_cols):
-                    return super().filter(col == 1, col == 0)  # Should be a 404
-
-                for v, primary_key_col in zip(vals, primary_key_cols):
-                    ncrits.append(primary_key_col == v)
-
-            if ncrits:
-                ncriterion += ncrits
-            else:
-                ncriterion.append(crit)
-
-        return super().filter(*ncriterion)
-
-
-db = SQLAlchemy(query_class=HackedQuery)
+# Declaration of models
+#
+# /!\ Warning: Order of primary_keys is really important because of the query hack
+#              e.g to being able to get campaign with id_campaign = 0; id_malette = 1
+#                  you will have to call api/campaign/0-1 because id_campaign is before id_malette
 
 class Campaign(db.Model):
-    id_campaign = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), primary_key=True)
+    id_campaign = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
+
+    name = db.Column(db.String(50))
     decription = db.Column(db.String(150))
     id_rederbro = db.Column(db.Integer)
 
-    db.UniqueConstraint(id_campaign, name)
 
 class Sensors(db.Model):
     id_sensors = db.Column(db.Integer, primary_key=True)
+    id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
     # gps
     lng = db.Column(db.Float)
     lat = db.Column(db.Float)
@@ -51,39 +33,63 @@ class Sensors(db.Model):
 
 class Lot(db.Model):
     id_lot = db.Column(db.Integer, primary_key=True)
+    id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
+
     pictures_path = db.Column(db.String(100), nullable=False)
     goprofailed = db.Column(db.Integer, nullable=False)
     takenDate = db.Column(db.DateTime, nullable=False)
 
-    id_sensors = db.Column(db.Integer, db.ForeignKey('sensors.id_sensors'), nullable=False)
-    sensors = db.relationship('Sensors', uselist=False, backref=backref('lot', lazy='dynamic'), foreign_keys=[id_sensors])
+    id_sensors = db.Column(db.Integer, nullable=False)
+    id_sensors_malette = db.Column(db.Integer, nullable=False)
+    sensors = db.relationship('Sensors', uselist=False, backref=backref('lot', lazy='dynamic'))
 
-    id_campaign = db.Column(db.Integer, db.ForeignKey('campaign.id_campaign'), nullable=False)
-    campaign = db.relationship('Campaign', backref=backref('lots', lazy='dynamic'), foreign_keys=[id_campaign])
+    id_campaign = db.Column(db.Integer, nullable=False)
+    id_campaign_malette = db.Column(db.Integer, nullable=False)
+    campaign = db.relationship('Campaign', backref=backref('lots', lazy='dynamic'))
 
-    id_tile = db.Column(db.Integer, db.ForeignKey('tile.id_tile'), nullable=True)
-    tile = db.relationship('Tile', uselist=False, backref=backref('lot', lazy='dynamic'), foreign_keys=[id_tile])
+    id_tile = db.Column(db.Integer, nullable=True)
+    id_tile_malette = db.Column(db.Integer, nullable=True)
+    tile = db.relationship('Tile', uselist=False, backref=backref('lot', lazy='dynamic'))
+
+    __table_args__ = (db.ForeignKeyConstraint(['id_campaign', 'id_campaign_malette'],
+                                              ['campaign.id_campaign', 'campaign.id_malette']),
+                      db.ForeignKeyConstraint(['id_sensors', 'id_sensors_malette'],
+                                              ['sensors.id_sensors', 'sensors.id_malette']),
+                      db.ForeignKeyConstraint(['id_tile', 'id_tile_malette'],
+                                              ['tile.id_tile', 'tile.id_malette']))
 
 class Cp(db.Model):
     id_cp = db.Column(db.Integer, primary_key=True)
+    id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
+
     search_algo_version = db.Column(db.String(20), nullable=False)
     nb_cp = db.Column(db.Integer, nullable=True)
     stichable = db.Column(db.Boolean, nullable=True)
     optimized = db.Column(db.Boolean, default=False)
     pto_dir = db.Column(db.String(100), nullable=False)
 
-    id_lot = db.Column(db.Integer, db.ForeignKey('lot.id_lot'), nullable=False)
+    id_lot = db.Column(db.Integer, nullable=False)
+    id_lot_malette = db.Column(db.Integer, nullable=False)
     lot = db.relationship(Lot, backref=backref('cps', lazy='dynamic'))
+
+    __table_args__ = (db.ForeignKeyConstraint(['id_lot', 'id_lot_malette'], ['lot.id_lot', 'lot.id_malette']),)
 
 class Panorama(db.Model):
     id_panorama = db.Column(db.Integer, primary_key=True)
+    id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
+
     equirectangular_path = db.Column(db.String(100))
 
-    id_cp = db.Column(db.Integer, db.ForeignKey('cp.id_cp'), nullable=False)
+    id_cp = db.Column(db.Integer, nullable=False)
+    id_cp_malette = db.Column(db.Integer, nullable=False)
     cp = db.relationship(Cp, backref=backref('panorama', lazy='dynamic'))
+
+    __table_args__ = (db.ForeignKeyConstraint(['id_cp', 'id_cp_malette'], ['cp.id_cp', 'cp.id_malette']),)
 
 class Tile(db.Model):
     id_tile = db.Column(db.Integer, primary_key=True)
+    id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
+
     param_location = db.Column(db.String(100), nullable=False)
     fallback_path = db.Column(db.String(100), nullable=False)
     extension = db.Column(db.String(5), nullable=False)
@@ -91,5 +97,8 @@ class Tile(db.Model):
     max_level = db.Column(db.Integer, nullable=False)
     cube_resolution = db.Column(db.Integer, nullable=False)
 
-    id_panorama = db.Column(db.Integer, db.ForeignKey('panorama.id_panorama'), nullable=False)
-    panorama = db.relationship(Panorama, uselist=False, backref=backref('tiles', lazy='dynamic'), foreign_keys=[id_panorama])
+    id_panorama = db.Column(db.Integer, nullable=False)
+    id_panorama_malette = db.Column(db.Integer, nullable=False)
+    panorama = db.relationship(Panorama, uselist=False, backref=backref('tiles', lazy='dynamic'))
+
+    __table_args__ = (db.ForeignKeyConstraint(['id_panorama', 'id_panorama_malette'], ['panorama.id_panorama', 'panorama.id_malette']),)

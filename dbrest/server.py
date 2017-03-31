@@ -2,30 +2,29 @@ from flask import Flask
 import flask_restless
 from flask_cors import CORS
 
-from . import db
+from . import db as models
+
+ALL_METHODS = ['GET', 'POST', 'PATCH', 'DELETE']
 
 app = Flask(__name__)
 CORS(app, expose_headers='Link')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG'] = True
 
-
-#    manager.create_api(db.Lot, methods=['GET', 'POST', 'DELETE', 'PATCH'])
-#    manager.create_api(db.Sensors, methods=['GET', 'POST', 'DELETE', 'PATCH'])
-#    manager.create_api(db.Cp, methods=['GET', 'POST', 'DELETE', 'PATCH'])
-#    manager.create_api(db.Panorama, methods=['GET', 'POST', 'DELETE', 'PATCH'])
-#    manager.create_api(db.Tile, methods=['GET', 'POST', 'DELETE', 'PATCH'])
-
 def makeAndRun(db_location, host, debug=False):
-
     if db_location and db_location != "in-memory":
         app.config['SQLALCHEMY_DATABASE_URI'] = db_location
-    db.db.init_app(app)
+    models.db.init_app(app)
 
     with app.test_request_context():
-        db.db.create_all()
+        models.db.create_all()
+        manager = flask_restless.APIManager(app, flask_sqlalchemy_db=models.db)
 
-    manager = flask_restless.APIManager(app)
-    manager.create_api(db.Campaign)
+    manager.create_api(models.Campaign, primary_key="id_campaign", methods=ALL_METHODS)
+    manager.create_api(models.Sensors, primary_key="id_sensors", methods=ALL_METHODS)
+    manager.create_api(models.Lot, primary_key="id_lot", methods=ALL_METHODS)
+    manager.create_api(models.Cp, primary_key="id_cp", methods=ALL_METHODS)
+    manager.create_api(models.Panorama, primary_key="id_panorama", methods=ALL_METHODS)
+    manager.create_api(models.Tile, primary_key="id_tile", methods=ALL_METHODS)
 
     app.run(host=host)
