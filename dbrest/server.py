@@ -2,7 +2,7 @@ from flask import Flask
 import flask_restless
 from flask_cors import CORS
 
-from . import db as models
+from dbrest import models
 
 ALL_METHODS = ['GET', 'POST', 'PATCH', 'DELETE']
 
