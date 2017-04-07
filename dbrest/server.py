@@ -20,11 +20,11 @@ def makeAndRun(db_location, host, debug=False):
         models.db.create_all()
         manager = flask_restless.APIManager(app, flask_sqlalchemy_db=models.db)
 
-    manager.create_api(models.Campaign, primary_key="id_campaign", methods=ALL_METHODS)
-    manager.create_api(models.Sensors, primary_key="id_sensors", methods=ALL_METHODS)
-    manager.create_api(models.Lot, primary_key="id_lot", methods=ALL_METHODS)
-    manager.create_api(models.Cp, primary_key="id_cp", methods=ALL_METHODS)
-    manager.create_api(models.Panorama, primary_key="id_panorama", methods=ALL_METHODS)
-    manager.create_api(models.Tile, primary_key="id_tile", methods=ALL_METHODS)
+    manager.create_api(models.Campaign, primary_key="id_campaign", methods=ALL_METHODS, url_prefix='/api/v1')
+    manager.create_api(models.Sensors, primary_key="id_sensors", methods=ALL_METHODS, url_prefix='/api/v1')
+    manager.create_api(models.Lot, primary_key="id_lot", methods=ALL_METHODS, url_prefix='/api/v1')
+    manager.create_api(models.Cp, primary_key="id_cp", methods=ALL_METHODS, url_prefix='/api/v1')
+    manager.create_api(models.Panorama, primary_key="id_panorama", methods=ALL_METHODS, url_prefix='/api/v1')
+    manager.create_api(models.Tile, primary_key="id_tile", methods=ALL_METHODS, url_prefix='/api/v1')
 
     app.run(host=host)
