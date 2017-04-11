@@ -25,17 +25,19 @@ class CompositePrimaryKeyHackedQuery(BaseQuery):
 
         It will return an impossible query (to get a 404)
         """
+
+        SEP = "-"
+
         ncriterion = []
         for crit in criterion:
             ncrits = []
 
             col = crit.left
             val = crit.right.effective_value
-            print(col, val)
 
             primary_key_cols = col.table.primary_key
-            if col.primary_key and len(primary_key_cols) >= 2:  # need modifications
-                vals = val.split("-")
+            if col.primary_key and SEP in val:
+                vals = val.split(SEP)
 
                 if len(vals) != len(primary_key_cols):
                     return super().filter(col == 1, col == 0)  # Should be a 404, so generate an impossible query
@@ -43,8 +45,8 @@ class CompositePrimaryKeyHackedQuery(BaseQuery):
                 for v, primary_key_col in zip(vals, primary_key_cols):
                     ncrits.append(primary_key_col == v)
 
-            if ncrits:
-                ncriterion += ncrits
+                if ncrits:
+                    ncriterion += ncrits
             else:
                 ncriterion.append(crit)
 
