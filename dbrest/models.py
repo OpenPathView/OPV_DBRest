@@ -41,15 +41,12 @@ class Lot(db.Model):
 
     id_sensors = db.Column(db.Integer, nullable=False)
     id_sensors_malette = db.Column(db.Integer, nullable=False)
-    sensors = db.relationship('Sensors', uselist=False, backref=backref('lot', lazy='dynamic'))
 
     id_campaign = db.Column(db.Integer, nullable=False)
     id_campaign_malette = db.Column(db.Integer, nullable=False)
-    campaign = db.relationship('Campaign', backref=backref('lots', lazy='dynamic'))
 
     id_tile = db.Column(db.Integer, nullable=True)
     id_tile_malette = db.Column(db.Integer, nullable=True)
-    tile = db.relationship('Tile', uselist=False, backref=backref('lot', lazy='dynamic'))
 
     __table_args__ = (db.ForeignKeyConstraint(['id_campaign', 'id_campaign_malette'],
                                               ['campaign.id_campaign', 'campaign.id_malette']),
@@ -70,7 +67,6 @@ class Cp(db.Model):
 
     id_lot = db.Column(db.Integer, nullable=False)
     id_lot_malette = db.Column(db.Integer, nullable=False)
-    lot = db.relationship(Lot, backref=backref('cps', lazy='dynamic'))
 
     __table_args__ = (db.ForeignKeyConstraint(['id_lot', 'id_lot_malette'], ['lot.id_lot', 'lot.id_malette']),)
 
@@ -82,7 +78,6 @@ class Panorama(db.Model):
 
     id_cp = db.Column(db.Integer, nullable=False)
     id_cp_malette = db.Column(db.Integer, nullable=False)
-    cp = db.relationship(Cp, backref=backref('panorama', lazy='dynamic'))
 
     __table_args__ = (db.ForeignKeyConstraint(['id_cp', 'id_cp_malette'], ['cp.id_cp', 'cp.id_malette']),)
 
@@ -99,6 +94,5 @@ class Tile(db.Model):
 
     id_panorama = db.Column(db.Integer, nullable=False)
     id_panorama_malette = db.Column(db.Integer, nullable=False)
-    panorama = db.relationship(Panorama, uselist=False, backref=backref('tiles', lazy='dynamic'))
 
     __table_args__ = (db.ForeignKeyConstraint(['id_panorama', 'id_panorama_malette'], ['panorama.id_panorama', 'panorama.id_malette']),)
