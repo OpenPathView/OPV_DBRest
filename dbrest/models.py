@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import backref
 
 from .helper import CompositePrimaryKeyHackedQuery, get_malette_id
 
@@ -21,7 +20,7 @@ class Campaign(db.Model):
 
 
 class Sensors(db.Model):
-    id_sensors = db.Column(db.Integer, primary_key=True)
+    id_sensors = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
     # gps
     lng = db.Column(db.Float)
@@ -32,7 +31,7 @@ class Sensors(db.Model):
     minutes = db.Column(db.Float)
 
 class Lot(db.Model):
-    id_lot = db.Column(db.Integer, primary_key=True)
+    id_lot = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
 
     pictures_path = db.Column(db.String(100), nullable=False)
@@ -56,7 +55,7 @@ class Lot(db.Model):
                                               ['tile.id_tile', 'tile.id_malette']))
 
 class Cp(db.Model):
-    id_cp = db.Column(db.Integer, primary_key=True)
+    id_cp = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
 
     search_algo_version = db.Column(db.String(20), nullable=False)
@@ -71,7 +70,7 @@ class Cp(db.Model):
     __table_args__ = (db.ForeignKeyConstraint(['id_lot', 'id_lot_malette'], ['lot.id_lot', 'lot.id_malette']),)
 
 class Panorama(db.Model):
-    id_panorama = db.Column(db.Integer, primary_key=True)
+    id_panorama = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
 
     equirectangular_path = db.Column(db.String(100))
@@ -82,7 +81,7 @@ class Panorama(db.Model):
     __table_args__ = (db.ForeignKeyConstraint(['id_cp', 'id_cp_malette'], ['cp.id_cp', 'cp.id_malette']),)
 
 class Tile(db.Model):
-    id_tile = db.Column(db.Integer, primary_key=True)
+    id_tile = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_malette = db.Column(db.Integer, primary_key=True, default=get_malette_id())
 
     param_location = db.Column(db.String(100), nullable=False)
