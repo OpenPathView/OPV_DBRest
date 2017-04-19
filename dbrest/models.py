@@ -1,9 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from geoalchemy2 import Geography
 
-from .helper import CompositePrimaryKeyHackedQuery, get_malette_id
-
-db = SQLAlchemy(query_class=CompositePrimaryKeyHackedQuery)
+db = SQLAlchemy()
 
 # Declaration of models
 #
