@@ -1,10 +1,9 @@
 from math import ceil
 from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields, decorators, ValidationError
-from sqlalchemy import func
 import json
 
-from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, session, GeoJSONGeography
+from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, session
 
 __all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'SensorsSchema', 'TileSchema']
 

@@ -1,10 +1,13 @@
 import hug
 from falcon import HTTP_400, HTTP_201
 
+import json
+
+from sqlalchemy import func
 from sqlalchemy.inspection import inspect as sainspect
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
-from dbrest import schema
+from dbrest import schema, models
 
 def generate_accessors(schm, version=1):
     """Will generate GET, POST and PUT/PATCH for the model contained by the schema
@@ -69,8 +72,6 @@ def generate_accessors(schm, version=1):
         inst, error = schm.load(kwargs)  # create ress in mem
 
         if error:
-            import ipdb
-            ipdb.set_trace()
             response.status = HTTP_400
             return error
 
@@ -129,6 +130,37 @@ def generate_accessors(schm, version=1):
 
     hug.put(path_put)(put)
     hug.patch(path_put)(put)
+
+@hug.get("/sensors/{id_sensors}/{id_malette}/within/{n}", version=1)
+def within(id_malette, id_sensors, n: hug.types.number, response):
+    """return all the sensors within {} meters to sensors(id_sensors, id_malette)"""
+    schm = schema.SensorsSchema()
+    ids = {"id_malette": id_malette, "id_sensors": id_sensors}
+
+    try:
+        inst = schm.get_instance(ids)
+    except SQLAlchemyError:
+        schm.Meta.sqla_session.rollback()
+        inst = None
+
+    if not inst:
+        response.status = HTTP_400
+        return "Can't find sensors"
+
+    geom = json.dumps(inst.gps_pos)
+
+    try:
+        insts = schm.Meta.sqla_session.query(models.Sensors).filter(
+            func.ST_DWithin(
+                func.ST_GeomFromGeoJSON(geom),
+                models.Sensors.gps_pos,
+                n)
+        )
+    except SQLAlchemyError:
+        schm.Meta.sqla_session.rollback()
+        insts = None
+
+    return schm.dump(insts, many=True).data
 
 
 generate_accessors(schema.CampaignSchema())
