@@ -141,3 +141,6 @@ class Tile(Base):
             ['id_panorama', 'id_panorama_malette'],
             ['panorama.id_panorama', 'panorama.id_malette']),
     )
+
+
+Base.metadata.create_all(engine)

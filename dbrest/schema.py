@@ -1,8 +1,10 @@
 from math import ceil
 from marshmallow_sqlalchemy import ModelSchema
-from marshmallow import fields, decorators
+from marshmallow import fields, decorators, ValidationError
+from sqlalchemy import func
+import json
 
-from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, session
+from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, session, GeoJSONGeography
 
 __all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'SensorsSchema', 'TileSchema']
 
@@ -32,6 +34,7 @@ class BaseSchema(ModelSchema):
             for prop in props
             if data.get(prop) is not None
         }
+
         query = self.session.query(self.opts.model).filter_by(**filters)
 
         if self.page_size:
@@ -58,6 +61,13 @@ class BaseSchema(ModelSchema):
     class Meta:
         sqla_session = session
 
+class GeoJSON(fields.Field):
+    def _deserialize(self, value, attr, data):
+        try:
+            return json.dumps(value)
+        except json.JSONDecodeError:
+            ValidationError('Not a valid GeoJSON', attr)
+
 class CampaignSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Campaign
@@ -74,7 +84,7 @@ class PanoramaSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Panorama
 class SensorsSchema(BaseSchema):
-    gps_pos = fields.Dict()
+    gps_pos = GeoJSON()
 
     class Meta(BaseSchema.Meta):
         model = Sensors

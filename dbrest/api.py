@@ -1,5 +1,5 @@
 import hug
-from falcon import HTTP_400
+from falcon import HTTP_400, HTTP_201
 
 from sqlalchemy.inspection import inspect as sainspect
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
@@ -42,7 +42,11 @@ def generate_accessors(schm, version=1):
         # return only one instance of the ressource, according to the pks
         # treat kwarks according pks
         # Get the instance of the model
-        inst = schm.get_instance(kwargs)
+        try:
+            inst = schm.get_instance(kwargs)
+        except SQLAlchemyError:
+            schm.Meta.sqla_session.rollback()
+            inst = None
 
         if not inst:
             response.status = HTTP_400
@@ -65,6 +69,8 @@ def generate_accessors(schm, version=1):
         inst, error = schm.load(kwargs)  # create ress in mem
 
         if error:
+            import ipdb
+            ipdb.set_trace()
             response.status = HTTP_400
             return error
 
@@ -80,6 +86,7 @@ def generate_accessors(schm, version=1):
             response.status = HTTP_400
             return "Sqlalchemy didn't like it {}".format(err.__class__)
 
+        response.status = HTTP_201
         return schm.dump(inst).data
 
     post.__doc__ = "Allow to create a new {} ressource".format(model_name)
@@ -89,7 +96,12 @@ def generate_accessors(schm, version=1):
     # And do the same for PUT/PATCHs requests
     def put(response, **kwargs):
         # Find ress
-        inst = schm.get_instance(kwargs)
+        try:
+            inst = schm.get_instance(kwargs)
+        except SQLAlchemyError as err:
+            schm.Meta.sqla_session.rollback()  # uncommit ! It doesn't works ! :-(
+            inst = None
+
         if inst is None:
             response.status = HTTP_400
             return cant_find_ress(kwargs)
