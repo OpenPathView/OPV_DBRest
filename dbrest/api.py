@@ -133,7 +133,7 @@ def generate_accessors(schm, version=1):
 
 @hug.get("/sensors/{id_sensors}/{id_malette}/within/{n}", version=1)
 def within(id_malette, id_sensors, n: hug.types.number, response):
-    """return all the sensors within {} meters to sensors(id_sensors, id_malette)"""
+    """return all the sensors within {n} meters to sensors(id_sensors, id_malette)"""
     schm = schema.SensorsSchema()
     ids = {"id_malette": id_malette, "id_sensors": id_sensors}
 
