@@ -167,6 +167,7 @@ def within(id_malette, id_sensors, n: hug.types.number, response):
 
     return schm.dump(insts, many=True).data
 
+models.create_all()
 
 generate_accessors(schema.CampaignSchema())
 generate_accessors(schema.PanoramaSchema())
@@ -174,3 +175,4 @@ generate_accessors(schema.SensorsSchema())
 generate_accessors(schema.TileSchema())
 generate_accessors(schema.LotSchema())
 generate_accessors(schema.CpSchema())
+generate_accessors(schema.TrackEdgeSchema())

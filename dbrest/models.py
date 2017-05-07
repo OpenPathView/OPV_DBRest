@@ -143,5 +143,37 @@ class Tile(Base):
             ['panorama.id_panorama', 'panorama.id_malette']),
     )
 
+class TrackEdge(Base):
+    """A track edge is an edge for a track to an other track, with orientation"""
+    __tablename__ = "trackedge"
 
-Base.metadata.create_all(engine)
+    id_track_edge = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
+
+    id_panorama_from = sa.Column(sa.Integer, nullable=False)
+    id_panorama_malette_from = sa.Column(sa.Integer, nullable=False)
+    panorama_from = relationship(Panorama, backref=backref('track_edges'),
+                                 foreign_keys=(id_panorama_from,
+                                               id_panorama_malette_from))
+
+    id_panorama_to = sa.Column(sa.Integer, nullable=False)
+    id_panorama_malette_to = sa.Column(sa.Integer, nullable=False)
+    panorama_to = relationship(Panorama,
+                                 foreign_keys=(id_panorama_to,
+                                               id_panorama_malette_to))
+
+    rotx = sa.Column(sa.Float)
+    roty = sa.Column(sa.Float)
+    rotz = sa.Column(sa.Float)
+
+    __table_args__ = (
+        sa.ForeignKeyConstraint(
+            ['id_panorama_from', 'id_panorama_malette_from'],
+            ['panorama.id_panorama', 'panorama.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_panorama_to', 'id_panorama_malette_to'],
+            ['panorama.id_panorama', 'panorama.id_malette']),
+    )
+
+def create_all():
+    Base.metadata.create_all(engine)
