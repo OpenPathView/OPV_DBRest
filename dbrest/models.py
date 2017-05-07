@@ -108,7 +108,7 @@ class Panorama(Base):
     id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     equirectangular_path = sa.Column(sa.String(100))
-    is_photosphere = sa.Column(sa.Boolean, nullable=False, default=False)
+    is_photosphere = sa.Column(sa.Boolean, nullable=True, default=False)
 
     id_cp = sa.Column(sa.Integer, nullable=False)
     id_cp_malette = sa.Column(sa.Integer, nullable=False)
