@@ -7,7 +7,12 @@ from sqlalchemy import func
 from sqlalchemy.inspection import inspect as sainspect
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
-from dbrest import schema, models
+from dbrest import schema, models, settings
+
+print("Config : ")
+print("Database : " + settings.engine_path)
+print("Debug : " + str(settings.debug))
+print("rederbroID : " + settings.rederbroID)
 
 def generate_accessors(schm, version=1):
     """Will generate GET, POST and PUT/PATCH for the model contained by the schema

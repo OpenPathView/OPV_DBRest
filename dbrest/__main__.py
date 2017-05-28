@@ -7,22 +7,30 @@ Usage:
   server.py (-h | --help)
 
 Options:
-  -h --help             Show this screen.
-  --db-location=<path>  Set the database location (e.g sqlite:////tmp/test.db) [default: in-memory].
-  --host=<host>         The bind host [default: 0.0.0.0]
-  --debug               Allow to stop the server on /shutdown
+  -h --help                 Show this screen.
+  --db-location=<path>      Set the database location [default: postgres://postgres:postgres@localhost/opvtest].
+  --rederbroID=<rederbroID> Set the rederbroID. [default: 1]
+  --debug=False             Set debug mode [default: False]
+  --port=<port>             The API http port [default: 5000]
 """
+
+import os
 
 from docopt import docopt
 
-from . import server
+"""
+ Make environnement config for API.
+"""
+def makeEnvironementConfig(arguments):
+    exports = 'export OPVAPI_dbPath="' + arguments.get('--db-location') + '"'
+    exports += ' && export OPVAPI_debug="' + arguments.get('--debug') + '"'
+    exports += ' && export OPVAPI_rederbroID="' + arguments.get('--rederbroID') + '"'
+    return exports
 
 def main():
     arguments = docopt(__doc__)
     debug = bool(arguments.get('--debug'))
-    server.makeAndRun(arguments['--db-location'],
-            arguments['--host'],
-            debug=debug)
+    os.system(makeEnvironementConfig(arguments) + ' && hug -m dbrest.api -p ' + arguments['--port'])
 
 if __name__ == "__main__":
     main()

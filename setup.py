@@ -12,6 +12,7 @@ setup(
     long_description=open('README.md').read(),
     dependency_links=["git+https://github.com/OpenPathView/OPV_DBRest-client.git#egg=opv_api_client-0.2"],
     install_requires=[
+        "docopt",
         "GeoAlchemy2",
         "hug",
         "marshmallow-sqlalchemy",
