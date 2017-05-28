@@ -10,13 +10,15 @@ setup(
     author_email="",
     description="The OPV DB rest api ",
     long_description=open('README.md').read(),
+    dependency_links=["git+https://github.com/OpenPathView/OPV_DBRest-client.git#egg=opv_api_client-0.2"],
     install_requires=[
         "GeoAlchemy2",
         "hug",
         "marshmallow-sqlalchemy",
         "SQLAlchemy",
         "psycopg2",
-        ],
+        "opv_api_client",
+    ],
     # Active la prise en compte du fichier MANIFEST.in
     include_package_data=False,
     url='https://github.com/OpenPathView/OPV_DBRest',
