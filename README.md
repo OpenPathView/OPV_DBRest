@@ -1,14 +1,24 @@
-# Dependances
+# Dependencies
 If you use postgresql you need to get
-- libpq-dev 
+- libpq-dev
 - python3-dev
 
 With apt: `sudo apt-get install libpq-dev python3-dev`
 
+# Install it
+```bash
+python setup.py install
+```
+
 # How to run ?
 Install the dbrest  
-`hug -m dbrest.api` 
-The server is running on :8000 (see hug options to set port, host...)
+```bash
+opv-api run --db-location="postgres://opv:opv@localhost/dev_rederbro" --rederbroID="TestID" --debug=True --port=5000
+```
 
 # How to set db ?
-see dbrest/setting.py
+Via CLI parameters.
+To display help :
+```bash
+opv-api -h
+```
