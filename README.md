@@ -13,7 +13,7 @@ python setup.py install
 # How to run ?
 Install the dbrest  
 ```bash
-opv-api run --db-location="postgres://opv:opv@localhost/dev_rederbro" --rederbroID="TestID" --debug=True --port=5000
+opv-api run --db-location="postgres://opv:opv@localhost/dev_rederbro" --IDMalette="TestID" --debug=True --port=5000
 ```
 
 # How to set db ?

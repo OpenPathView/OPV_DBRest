@@ -9,7 +9,7 @@ Usage:
 Options:
   -h --help                 Show this screen.
   --db-location=<path>      Set the database location [default: postgres://postgres:postgres@localhost/opvtest].
-  --rederbroID=<rederbroID> Set the rederbroID. [default: 1]
+  --IDMalette=<IDMalette> Set the IDMalette. [default: 1]
   --debug=False             Set debug mode [default: False]
   --port=<port>             The API http port [default: 5000]
 """
@@ -24,7 +24,7 @@ from docopt import docopt
 def makeEnvironementConfig(arguments):
     exports = 'export OPVAPI_dbPath="' + arguments.get('--db-location') + '"'
     exports += ' && export OPVAPI_debug="' + arguments.get('--debug') + '"'
-    exports += ' && export OPVAPI_rederbroID="' + arguments.get('--rederbroID') + '"'
+    exports += ' && export OPVAPI_IDMalette="' + arguments.get('--IDMalette') + '"'
     return exports
 
 def main():
