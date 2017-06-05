@@ -12,7 +12,7 @@ from dbrest import schema, models, settings
 print("Config : ")
 print("Database : " + settings.engine_path)
 print("Debug : " + str(settings.debug))
-print("rederbroID : " + settings.rederbroID)
+print("IDMalette : " + settings.IDMalette)
 
 def generate_accessors(schm, version=1):
     """Will generate GET, POST and PUT/PATCH for the model contained by the schema
