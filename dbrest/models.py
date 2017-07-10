@@ -66,6 +66,7 @@ class Lot(Base):
 
     id_tile = sa.Column(sa.Integer, nullable=True)
     id_tile_malette = sa.Column(sa.Integer, nullable=True)
+    tile = relationship('Tile')
 
     __table_args__ = (
         sa.ForeignKeyConstraint(
