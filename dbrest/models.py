@@ -55,6 +55,7 @@ class Lot(Base):
     pictures_path = sa.Column(sa.String(100), nullable=False)
     goprofailed = sa.Column(sa.Integer, nullable=False)
     takenDate = sa.Column(sa.DateTime, nullable=False)
+    active = sa.Column(sa.Boolean, nullable=True)
 
     id_sensors = sa.Column(sa.Integer, nullable=False)
     id_sensors_malette = sa.Column(sa.Integer, nullable=False)
@@ -66,6 +67,7 @@ class Lot(Base):
 
     id_tile = sa.Column(sa.Integer, nullable=True)
     id_tile_malette = sa.Column(sa.Integer, nullable=True)
+    tile = relationship('Tile')
 
     __table_args__ = (
         sa.ForeignKeyConstraint(
@@ -144,4 +146,35 @@ class Tile(Base):
     )
 
 
-Base.metadata.create_all(engine)
+class TrackEdge(Base):
+    """A track edge is an edge for a track to an other track, with orientation"""
+    __tablename__ = "trackedge"
+
+    id_track_edge = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
+
+    id_lot_from = sa.Column(sa.Integer, nullable=False)
+    id_lot_malette_from = sa.Column(sa.Integer, nullable=False)
+    lot_from = relationship(Lot, backref=backref('track_edges'),
+                                 foreign_keys=(id_lot_from,
+                                               id_lot_malette_from))
+
+    id_lot_to = sa.Column(sa.Integer, nullable=False)
+    id_lot_malette_to = sa.Column(sa.Integer, nullable=False)
+    lot_to = relationship(Lot, foreign_keys=(id_lot_to, id_lot_malette_to))
+
+    pitch = sa.Column(sa.Float)
+    yaw = sa.Column(sa.Float)
+    targetPitch = sa.Column(sa.Float)
+    targetYaw = sa.Column(sa.Float)
+
+    __table_args__ = (
+        sa.ForeignKeyConstraint(
+            ['id_lot_from', 'id_lot_malette_from'],
+            ['lot.id_lot', 'lot.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_lot_to', 'id_lot_malette_to'],
+            ['lot.id_lot', 'lot.id_malette']))
+
+def create_all():
+    Base.metadata.create_all(engine)
