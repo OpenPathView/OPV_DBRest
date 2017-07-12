@@ -163,6 +163,8 @@ class TrackEdge(Base):
     id_lot_malette_to = sa.Column(sa.Integer, nullable=False)
     lot_to = relationship(Lot, foreign_keys=(id_lot_to, id_lot_malette_to))
 
+    active = sa.Column(sa.Boolean, nullable=True)
+
     pitch = sa.Column(sa.Float)
     yaw = sa.Column(sa.Float)
     targetPitch = sa.Column(sa.Float)
