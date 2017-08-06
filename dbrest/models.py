@@ -59,7 +59,7 @@ class Lot(Base):
 
     id_sensors = sa.Column(sa.Integer, nullable=False)
     id_sensors_malette = sa.Column(sa.Integer, nullable=False)
-    sensors = relationship('Sensors', backref=backref('lot'))
+    sensors = relationship('Sensors', backref=backref('lot', uselist=False))
 
     id_campaign = sa.Column(sa.Integer, nullable=False)
     id_campaign_malette = sa.Column(sa.Integer, nullable=False)
