@@ -12,6 +12,7 @@ Options:
   --IDMalette=<IDMalette> Set the IDMalette. [default: 1]
   --debug=False             Set debug mode [default: False]
   --port=<port>             The API http port [default: 5000]
+  --process=<process>       Number of worker for Gunicorn [default: 4]
 """
 
 import os
@@ -30,7 +31,8 @@ def makeEnvironementConfig(arguments):
 def main():
     arguments = docopt(__doc__)
     debug = bool(arguments.get('--debug'))
-    os.system(makeEnvironementConfig(arguments) + ' && hug -m dbrest.api -p ' + arguments['--port'])
+    #os.system(makeEnvironementConfig(arguments) + ' && hug -m dbrest.api -p ' + arguments['--port'])
+    os.system(makeEnvironementConfig(arguments) + ' && gunicorn -b 0.0.0.0:%s -w %s dbrest.api:__hug_wsgi__' % (arguments['--port'], arguments['--process']))
 
 if __name__ == "__main__":
     main()

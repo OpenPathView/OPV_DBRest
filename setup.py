@@ -19,6 +19,7 @@ setup(
         "SQLAlchemy",
         "psycopg2",
         "opv_api_client",
+        "gunicorn"
     ],
     # Active la prise en compte du fichier MANIFEST.in
     include_package_data=False,
