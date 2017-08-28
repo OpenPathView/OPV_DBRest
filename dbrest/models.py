@@ -59,7 +59,7 @@ class Lot(Base):
 
     id_sensors = sa.Column(sa.Integer, nullable=False)
     id_sensors_malette = sa.Column(sa.Integer, nullable=False)
-    sensors = relationship('Sensors', backref=backref('lot'))
+    sensors = relationship('Sensors', backref=backref('lot', uselist=False))
 
     id_campaign = sa.Column(sa.Integer, nullable=False)
     id_campaign_malette = sa.Column(sa.Integer, nullable=False)
@@ -91,6 +91,7 @@ class Cp(Base):
     nb_cp = sa.Column(sa.Integer, nullable=True)
     stichable = sa.Column(sa.Boolean, nullable=True)
     optimized = sa.Column(sa.Boolean, default=False)
+    nearest_cp_found = sa.Column(sa.Boolean, nullable=True)
     pto_dir = sa.Column(sa.String(100), nullable=False)
 
     id_lot = sa.Column(sa.Integer, nullable=False)
