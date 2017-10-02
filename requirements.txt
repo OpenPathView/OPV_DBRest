@@ -3,3 +3,6 @@ hug==2.2.0
 marshmallow-sqlalchemy==0.13.1
 SQLAlchemy==1.1.9
 psycopg2==2.7.1
+sqlalchemy-migrate==0.11.0
+SQLAlchemy-Utils==0.32.17
+docopt==0.6.2

@@ -12,14 +12,16 @@ setup(
     long_description=open('README.md').read(),
     dependency_links=["git+https://github.com/OpenPathView/OPV_DBRest-client.git#egg=opv_api_client-0.2"],
     install_requires=[
-        "docopt",
         "GeoAlchemy2",
         "hug",
         "marshmallow-sqlalchemy",
         "SQLAlchemy",
         "psycopg2",
         "opv_api_client",
-        "gunicorn"
+        "gunicorn",
+        "sqlalchemy-migrate",
+        "SQLAlchemy-Utils",
+        "docopt"
     ],
     # Active la prise en compte du fichier MANIFEST.in
     include_package_data=False,

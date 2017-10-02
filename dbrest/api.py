@@ -7,7 +7,7 @@ from sqlalchemy import func
 from sqlalchemy.inspection import inspect as sainspect
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
-from dbrest import schema, models, settings
+from dbrest import schema, models, settings, db
 
 print("Config : ")
 print("Database : " + settings.engine_path)
@@ -74,6 +74,7 @@ def generate_accessors(schm, version=1):
 
     # And do the same for POSTs requests
     def post(response, **kwargs):
+
         inst, error = schm.load(kwargs)  # create ress in mem
 
         if error:
@@ -167,7 +168,7 @@ def within(id_malette, id_sensors, n: hug.types.number, response):
 
     return schm.dump(insts, many=True).data
 
-models.create_all()
+db.create_all()
 
 generate_accessors(schema.CampaignSchema())
 generate_accessors(schema.PanoramaSchema())

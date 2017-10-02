@@ -1,14 +1,11 @@
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker, relationship, backref
+from sqlalchemy.orm import relationship, backref
 from geoalchemy2 import Geography
 import json
 
-from dbrest import settings
 from dbrest.helpers import get_malette_id
 
-engine = sa.create_engine(settings.engine_path)
-session = scoped_session(sessionmaker(bind=engine))
 Base = declarative_base()
 
 class GeoJSONGeography(Geography):
@@ -178,6 +175,3 @@ class TrackEdge(Base):
         sa.ForeignKeyConstraint(
             ['id_lot_to', 'id_lot_malette_to'],
             ['lot.id_lot', 'lot.id_malette']))
-
-def create_all():
-    Base.metadata.create_all(engine)

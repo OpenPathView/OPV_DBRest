@@ -3,7 +3,8 @@ from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields, decorators, ValidationError
 import json
 
-from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge, session
+from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge
+from dbrest.db import session
 
 __all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'SensorsSchema', 'TileSchema']
 
