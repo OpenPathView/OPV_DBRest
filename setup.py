@@ -24,11 +24,12 @@ setup(
         "docopt"
     ],
     # Active la prise en compte du fichier MANIFEST.in
-    include_package_data=False,
+    include_package_data=True,
     url='https://github.com/OpenPathView/OPV_DBRest',
     entry_points={
         'console_scripts': [
             'opv-api=dbrest.__main__:main',
+            'opv-db-migrate=dbrest.database.create_or_update:main'
         ],
     }
 )

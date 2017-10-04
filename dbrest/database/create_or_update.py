@@ -20,14 +20,12 @@
 """Database creation and migration script.
 
 Usage:
-  create_or_update.py (--db-uri=<path> --migrate-repo=<path> --model=<dottedmodel>) [--debug]
+  create_or_update.py (--db-uri=<path>) [--debug]
   create_or_update.py (-h | --help)
 
 Options:
   -h --help                     Show this screen.
   --db-uri=<path>               Set the database location.
-  --migrate-repo=<path>         Migration (sqlalchemy-migrate) repository [default: db_repo].
-  --model=<dottedmodel>         Path to sqlalchemy model in form of string: ``some.python.module:Class`.
   --debug                       Set logger to debug level.
 """
 
@@ -92,7 +90,7 @@ def create_or_migrate(db_uri, db_repo, model_dotted_name):
     logger.info("Upgrading database")
     mapi.upgrade(db_uri, db_repo)
 
-if __name__ == "__main__":
+def main():
     args = docopt(__doc__)
 
     if "--debug" in args and args['--debug']:
@@ -105,4 +103,10 @@ if __name__ == "__main__":
     sys.path.append(cur_dir)
     logger.debug("Added to sys path : {}".format(cur_dir))
 
-    create_or_migrate(db_uri=args['--db-uri'], db_repo=args['--migrate-repo'], model_dotted_name=args['--model'])
+    repo = os.path.dirname(os.path.realpath(__file__)) + "/migrate_repository"
+    model_dotted_name = "dbrest.models:Base.metadata"
+
+    create_or_migrate(db_uri=args['--db-uri'], db_repo=repo, model_dotted_name=model_dotted_name)
+
+if __name__ == "__main__":
+    main()

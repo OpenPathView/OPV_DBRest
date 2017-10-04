@@ -131,8 +131,7 @@ def commit_db_model(db_uri, db_repo, model_dotted_name, commit_msg):
             logger.info("Removing the update script")
             os.unlink(update_script_path)
 
-
-if __name__ == "__main__":
+def main():
     args = docopt(__doc__)
 
     if "--debug" in args and args['--debug']:
@@ -147,3 +146,7 @@ if __name__ == "__main__":
 
     logger.debug(args)
     commit_db_model(db_uri=args['--db-uri'], db_repo=args['--migrate-repo'], model_dotted_name=args['--model'], commit_msg=args['<commit-msg>'])
+
+
+if __name__ == "__main__":
+    main()
