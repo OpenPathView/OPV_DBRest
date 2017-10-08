@@ -3,10 +3,11 @@ from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields, decorators, ValidationError
 import json
 
-from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge
+from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge, Reconstruction, Shot, Path
 from dbrest.db import session
 
-__all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'SensorsSchema', 'TileSchema']
+__all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'SensorsSchema', 'TileSchema',
+           'TrackEdgeSchema', 'ReconstructionSchema', 'ShotSchema', 'PathSchema']
 
 class BaseSchema(ModelSchema):
     def __init__(self, *args, **kwargs):
@@ -96,3 +97,15 @@ class TileSchema(BaseSchema):
 class TrackEdgeSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = TrackEdge
+
+class ReconstructionSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = Reconstruction
+
+class ShotSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = Shot
+
+class PathSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = Path
