@@ -34,7 +34,7 @@ import sys
 import logging
 from docopt import docopt
 from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
 from migrate.versioning import api as mapi
 from migrate.versioning.util import load_model
@@ -45,6 +45,44 @@ logger = logging.getLogger("create_or_update")
 ch = logging.StreamHandler(sys.stdout)
 ch.setFormatter(logging.Formatter('%(levelname)s - %(message)s'))
 logger.addHandler(ch)
+
+def database_exists(engine):
+    """
+    Simply check if the database exists or not.
+    """
+    try:
+        engine.execute("SELECT 1")
+        return True
+    except (ProgrammingError, OperationalError):
+        return False
+
+def lastest_unversionned_schemas_deployed(engine):
+    """
+    Test lastest unversionned schema changes.
+
+    :param engine: SQLAlchemy engine, of the db to be tested.
+    :return: True if the DB has the latest unversionned schema.
+    """
+    try:
+        engine.execute("SELECT active FROM trackedge;")
+        return True
+    except ProgrammingError:
+        return False
+
+def is_under_version_control(db_uri, db_repo):
+    """
+    Check if the database is under version control.
+
+    :param db_uri: Database URI.
+    :param db_repo: Migrate repository path.
+    :return: True if the DB has the latest unversionned schema.
+    """
+    try:
+        v = mapi.db_version(db_uri, db_repo)
+        logger.info("Database {} exists and is under version control (version: {})".format(db_uri, v))
+        return True
+    except DatabaseNotControlledError:
+        return False
 
 def create_or_migrate(db_uri, db_repo, model_dotted_name):
     """
@@ -61,30 +99,22 @@ def create_or_migrate(db_uri, db_repo, model_dotted_name):
         raise OSError(2, "Migrate repository doesn't exists ! ", db_repo)
 
     engine = create_engine(db_uri)
-    dbExist = database_exists(db_uri)
 
-    # Test if database exists, create it if needed
-    if not dbExist:
-        logger.info("Database {} doesn't exists.".format(db_uri))
+    # if database isn't under versionning, building it or setting correction version
+    if not is_under_version_control(db_uri=db_uri, db_repo=db_repo):
 
-        # Create db with meta model
-        meta = load_model(model_dotted_name)
-        meta.create_all(engine)
+        if lastest_unversionned_schemas_deployed(engine=engine):  # DB exists is the lastest not versionned
+            logger.info("Database {} wasn't versionned by is the latest unversionned schema setting it's" +
+                        "version to 0, to apply migrations.".format(db_uri))
+            mapi.version_control(db_uri, db_repo, 0)  # considering it's an old db, before versionning
+        else:
+            logger.info("Database {} tables doesn't seems to exists, try to create it.".format(db_uri))
+            meta = load_model(model_dotted_name)
+            meta.create_all(engine)
 
-        # set version to latest number
-        lastest_version_rep = mapi.version(db_repo)
-        logger.debug("Lastest version in repo is {}, setting db to this version".format(lastest_version_rep))
-        mapi.version_control(db_uri, db_repo, lastest_version_rep)
-
-        # no updagrade needed we just created the lastest version available
-        return
-
-    # When db exist, checking if it's under version control
-    try:
-        v = mapi.db_version(db_uri, db_repo)
-        logger.info("Database {} exists and is under version control (version: {})".format(db_uri, v))
-    except DatabaseNotControlledError:  # DB isn't under version controlled
-        mapi.version_control(db_uri, db_repo, 0)  # considering it's an old db, before versionning
+            lastest_version_rep = mapi.version(db_repo)
+            logger.debug("Lastest version in repo is {}, setting db to this version".format(lastest_version_rep))
+            mapi.version_control(db_uri, db_repo, lastest_version_rep)
 
     # upgrading to newest version
     logger.info("Upgrading database")

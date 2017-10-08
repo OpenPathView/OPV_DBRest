@@ -20,7 +20,6 @@ setup(
         "opv_api_client",
         "gunicorn",
         "sqlalchemy-migrate",
-        "SQLAlchemy-Utils",
         "docopt"
     ],
     # Active la prise en compte du fichier MANIFEST.in

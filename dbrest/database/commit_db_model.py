@@ -23,14 +23,12 @@
 """Database model versionning script. Used to commit new models and migrate.
 
 Usage:
-  commit_db_model.py <commit-msg> (--db-uri=<path> --migrate-repo=<path> --model=<dottedmodel>) [--debug]
+  commit_db_model.py <commit-msg> (--db-uri=<path>) [--debug]
   commit_db_model.py (-h | --help)
 
 Options:
   -h --help                     Show this screen.
   --db-uri=<path>               Set the database location.
-  --migrate-repo=<path>         Migration (sqlalchemy-migrate) repository [default: db_repo].
-  --model=<dottedmodel>         Path to sqlalchemy model in form of string: ``some.python.module:Class`.
   --debug                       Set logger to debug level.
 """
 
@@ -40,7 +38,6 @@ import logging
 from pathlib import Path
 from docopt import docopt
 from tempfile import TemporaryDirectory
-from sqlalchemy_utils import database_exists
 
 from migrate.versioning import api as mapi
 from migrate.versioning.util import load_model
@@ -49,6 +46,8 @@ logger = logging.getLogger("commit_db_model")
 ch = logging.StreamHandler(sys.stdout)
 ch.setFormatter(logging.Formatter('%(levelname)s - %(message)s'))
 logger.addHandler(ch)
+
+IGNORED_TABLES = ["spatial_ref_sys"]  # tables from DB to be ignored during the diff process
 
 def save_to_file(content, fpath):
     """
@@ -81,16 +80,54 @@ def get_update_script_name(version, commit_msg):
     m = commit_msg.replace(" ", "_")
     return "{0:03d}_{msg}_.py".format(int(version), msg=m)
 
+def correction_geography(python_source_model):
+    """
+    Add the GeoJSONGeography to old model source and replace Geography by this class
+
+    :param python_source_model: Python model source.
+    :return: The modified python model source string.
+    """
+    geoJSONGeography_source_class = """
+from geoalchemy2 import Geography
+import json
+
+class GeoJSONGeography(Geography):
+    \"\"\"Allow to get and to return a GeoJSON object instead of WKB\"\"\"
+    as_binary = 'ST_AsGeoJSON'
+    from_text = 'ST_GeomFromGeoJSON'
+
+    def result_processor(self, dialect, coltype):
+        def process(value):
+            try:
+                return json.loads(value)
+            except:
+                return
+        return process
+    """
+    python_source_model = python_source_model.replace("Geography", "GeoJSONGeography")
+    python_source_model = geoJSONGeography_source_class + python_source_model
+    return python_source_model
+
+def filter_tables(meta_model, ignored_tables):
+    """
+    Remove tables listed in ignored_tables from model.
+
+    :param model: An sqlalchemy meta model.
+    :param ignored_tables: list of tables names to be ignored.
+    :return: the filtered model.
+    """
+    for tname in ignored_tables:
+        if tname in meta_model.tables:
+            logger.debug("Removing {} from meta model (filtering)".format(tname))
+            meta_model.remove(meta_model.tables[tname])
+    return meta_model
+
 def commit_db_model(db_uri, db_repo, model_dotted_name, commit_msg):
     logger.info("Committing new change on model : {}".format(model_dotted_name))
 
     # Test if the migrate repository exists
     if not os.path.isdir(db_repo):
         raise OSError(2, "Migrate repository doesn't exists ! ", db_repo)
-
-    # Test if database exists, create it if needed
-    if not database_exists(db_uri):
-        raise IOError("Database {} doesn't exists, need to compare to the new model".format(db_uri))
 
     new_model = load_model(model_dotted_name)
 
@@ -110,6 +147,7 @@ def commit_db_model(db_uri, db_repo, model_dotted_name, commit_msg):
         logger.info("Generated old model python script from database")
         old_model_source = mapi.create_model(db_uri, db_repo)
         logger.debug("Old model python : \n {}".format(old_model_source))
+        old_model_source = correction_geography(old_model_source)
         save_to_file(old_model_source, old_model_fpath)
 
         # get latest version
@@ -119,7 +157,10 @@ def commit_db_model(db_uri, db_repo, model_dotted_name, commit_msg):
 
         # make_update_script_for_model, save it in repo lastest_version + 1 + commit msg
         oldmodel = load_model('oldmodel:meta')
+        oldmodel = filter_tables(oldmodel, IGNORED_TABLES)
         update_script_source = mapi.make_update_script_for_model(db_uri, db_repo, oldmodel, new_model)
+        print(update_script_source)
+        input("Wait ... ")
         save_to_file(update_script_source, update_script_path)
 
         if confirm("Did you check (and modify if necessary) the upgrade script ({}) ? !! Confirm will upgrade the database !!".format(update_script_path)):
@@ -144,8 +185,11 @@ def main():
     sys.path.append(cur_dir)
     logger.debug("Added to sys path : {}".format(cur_dir))
 
+    repo = os.path.dirname(os.path.realpath(__file__)) + "/migrate_repository"
+    model_dotted_name = "dbrest.models:Base.metadata"
+
     logger.debug(args)
-    commit_db_model(db_uri=args['--db-uri'], db_repo=args['--migrate-repo'], model_dotted_name=args['--model'], commit_msg=args['<commit-msg>'])
+    commit_db_model(db_uri=args['--db-uri'], db_repo=repo, model_dotted_name=model_dotted_name, commit_msg=args['<commit-msg>'])
 
 
 if __name__ == "__main__":
