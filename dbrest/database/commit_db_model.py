@@ -44,7 +44,7 @@ from migrate.versioning.util import load_model
 
 logger = logging.getLogger("commit_db_model")
 ch = logging.StreamHandler(sys.stdout)
-ch.setFormatter(logging.Formatter('%(levelname)s - %(message)s'))
+ch.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logger.addHandler(ch)
 
 IGNORED_TABLES = ["spatial_ref_sys"]  # tables from DB to be ignored during the diff process
@@ -135,7 +135,7 @@ def commit_db_model(db_uri, db_repo, model_dotted_name, commit_msg):
     print("------------------------------")
     print(mapi.compare_model_to_db(db_uri, db_repo, new_model))
     print("------------------------------")
-    if not confirm("Are these changes correct ?"):
+    if not confirm("Are these changes correct (ignored tables {} are listed here but will be ignored ) ?".format(IGNORED_TABLES)):
         logger.info("Changes not confirmed aborting :(")
         return
 

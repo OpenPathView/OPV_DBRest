@@ -43,7 +43,7 @@ from migrate.exceptions import DatabaseNotControlledError
 
 logger = logging.getLogger("create_or_update")
 ch = logging.StreamHandler(sys.stdout)
-ch.setFormatter(logging.Formatter('%(levelname)s - %(message)s'))
+ch.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logger.addHandler(ch)
 
 def database_exists(engine):
@@ -104,8 +104,8 @@ def create_or_migrate(db_uri, db_repo, model_dotted_name):
     if not is_under_version_control(db_uri=db_uri, db_repo=db_repo):
 
         if lastest_unversionned_schemas_deployed(engine=engine):  # DB exists is the lastest not versionned
-            logger.info("Database {} wasn't versionned by is the latest unversionned schema setting it's" +
-                        "version to 0, to apply migrations.".format(db_uri))
+            logger.info("Database {} wasn't versionned but is the latest unversionned schema, setting it's".format(db_uri) +
+                        "version to 0, to apply migrations.")
             mapi.version_control(db_uri, db_repo, 0)  # considering it's an old db, before versionning
         else:
             logger.info("Database {} tables doesn't seems to exists, try to create it.".format(db_uri))
