@@ -46,6 +46,11 @@ ch = logging.StreamHandler(sys.stdout)
 ch.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logger.addHandler(ch)
 
+malette_id = 0
+
+def get_malette_id():
+    return malette_id
+
 def database_exists(engine):
     """
     Simply check if the database exists or not.

@@ -3,11 +3,14 @@ from migrate import *
 
 
 from migrate.changeset import schema
+
+from dbrest.helpers import get_malette_id
+
 pre_meta = MetaData()
 post_meta = MetaData()
 path = Table('path', post_meta,
-    Column('id_path', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_path', Integer, primary_key=True, autoincrement=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, default=get_malette_id(), nullable=False),
     Column('id_shot_from', Integer, nullable=False),
     Column('id_shot_malette_from', Integer, nullable=False),
     Column('id_shot_to', Integer, nullable=False),
@@ -21,8 +24,8 @@ path = Table('path', post_meta,
 )
 
 reconstruction = Table('reconstruction', post_meta,
-    Column('id_reconstruction', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_reconstruction', Integer, primary_key=True, autoincrement=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, default=get_malette_id(), nullable=False),
     Column('id_ref_lla', Integer, nullable=False),
     Column('id_ref_lla_malette', Integer, nullable=False),
     Column('raw_output_files', String(length=100), nullable=False),
@@ -32,8 +35,8 @@ reconstruction = Table('reconstruction', post_meta,
 )
 
 shot = Table('shot', post_meta,
-    Column('id_shot', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_shot', Integer, primary_key=True, autoincrement=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, default=get_malette_id(), nullable=False),
     Column('orientation', Integer),
     Column('camera', String(length=250)),
     Column('gps_pos', ARRAY(Float(), dimensions=3), nullable=False),
