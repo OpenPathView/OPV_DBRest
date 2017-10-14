@@ -226,7 +226,7 @@ class Reconstruction(Base):
 class Shot(Base):
     """ Reconstruction shot """
     __tablename__ = "shot"
-    id_shot = sa.Column(sa.Integer, primary_key=True)
+    id_shot = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     orientation = sa.Column(sa.Integer)
@@ -263,7 +263,7 @@ class Shot(Base):
 class Path(Base):
     """ Path between 2 shots """
     __tablename__ = "path"
-    id_path = sa.Column(sa.Integer, primary_key=True)
+    id_path = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     id_malette = sa.Column(sa.Integer, primary_key=True)
 
     id_shot_from = sa.Column(sa.Integer, nullable=False)
