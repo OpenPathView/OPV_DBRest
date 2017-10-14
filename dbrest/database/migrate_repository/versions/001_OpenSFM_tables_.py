@@ -48,8 +48,8 @@ shot = Table('shot', post_meta,
     Column('id_reconstruction_malette', Integer, nullable=False),
     Column('id_panorama', Integer, nullable=False),
     Column('id_panorama_malette', Integer, nullable=False),
-    Column('id_corrected_sensor', Integer),
-    Column('id_corrected_sensor_malette', Integer),
+    Column('id_corrected_sensors', Integer),
+    Column('id_corrected_sensors_malette', Integer),
 )
 
 
@@ -65,7 +65,7 @@ ADD CONSTRAINT shot_id_reconstruction_fkey FOREIGN KEY (id_reconstruction, id_re
                                            REFERENCES reconstruction(id_reconstruction, id_malette),
 ADD CONSTRAINT shot_id_panorama_fkey FOREIGN KEY (id_panorama, id_panorama_malette)
                                      REFERENCES panorama(id_panorama, id_malette),
-ADD CONSTRAINT shot_id_corrected_sensor FOREIGN KEY (id_corrected_sensor,id_corrected_sensor_malette)
+ADD CONSTRAINT shot_id_corrected_sensors FOREIGN KEY (id_corrected_sensors,id_corrected_sensors_malette)
                                         REFERENCES sensors(id_sensors, id_malette);
 
 ALTER TABLE path
@@ -83,7 +83,7 @@ DROP CONSTRAINT reconstruction_id_ref_lla_fkey;
 ALTER TABLE shot
 DROP CONSTRAINT shot_id_reconstruction_fkey,
 DROP CONSTRAINT shot_id_panorama_fkey,
-DROP CONSTRAINT shot_id_corrected_sensor;
+DROP CONSTRAINT shot_id_corrected_sensors;
 
 ALTER TABLE path
 DROP CONSTRAINT path_id_shot_from_fkey,

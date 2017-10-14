@@ -245,9 +245,9 @@ class Shot(Base):
     id_panorama_malette = sa.Column(sa.Integer, nullable=False)
     panorama = relationship(Panorama, foreign_keys=(id_panorama, id_panorama_malette))
 
-    id_corrected_sensor = sa.Column(sa.Integer)
-    id_corrected_sensor_malette = sa.Column(sa.Integer)
-    corrected_sensor = relationship(Sensors, foreign_keys=(id_corrected_sensor, id_corrected_sensor_malette))
+    id_corrected_sensors = sa.Column(sa.Integer)
+    id_corrected_sensors_malette = sa.Column(sa.Integer)
+    corrected_sensor = relationship(Sensors, foreign_keys=(id_corrected_sensors, id_corrected_sensors_malette))
 
     __table_args__ = (
         sa.ForeignKeyConstraint(
@@ -257,7 +257,7 @@ class Shot(Base):
             ['id_panorama', 'id_panorama_malette'],
             ['panorama.id_panorama', 'panorama.id_malette']),
         sa.ForeignKeyConstraint(
-            ['id_corrected_sensor', 'id_corrected_sensor_malette'],
+            ['id_corrected_sensors', 'id_corrected_sensors_malette'],
             ['sensors.id_sensors', 'sensors.id_malette']))
 
 class Path(Base):
