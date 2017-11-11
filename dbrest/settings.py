@@ -6,6 +6,10 @@ Get settings from environment variable.
 import os
 
 """The path were to find the DB"""
-engine_path = os.environ["OPVAPI_dbPath"]
-debug = os.environ["OPVAPI_debug"] == "True" or os.environ["OPVAPI_debug"] == "true"
-IDMalette = os.environ["OPVAPI_IDMalette"]
+OPVAPI_dbPath = os.environ["OPVAPI_dbPath"] if "OPVAPI_dbPath" in os.environ else None
+OPVAPI_debug = os.environ["OPVAPI_debug"] if "OPVAPI_debug" in os.environ else None
+OPVAPI_IDMalette = os.environ["OPVAPI_IDMalette"] if "OPVAPI_IDMalette" in os.environ else None
+
+engine_path = OPVAPI_dbPath
+debug = OPVAPI_debug == "True" or OPVAPI_debug == "true"
+IDMalette = OPVAPI_IDMalette

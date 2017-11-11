@@ -15,8 +15,8 @@
 
 # Contributors: BERNARD Benjamin, GOUGE Tristan
 # Email: team@openpathview.fr
-# Description: Database SQLAlchemy model.
-# !!! Please refer to README.md if you change this model to commit it (database is versionned) !!!
+# Description:  Original model of the database, considerer it as the model version 0. Used to test migration script.
+# DO NOT CHANGE THIS MODEL
 
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
@@ -24,7 +24,7 @@ from sqlalchemy.orm import relationship, backref
 from geoalchemy2 import Geography
 import json
 
-from dbrest.helpers import get_malette_id
+from create_db_original import get_malette_id
 
 Base = declarative_base()
 
@@ -196,97 +196,4 @@ class TrackEdge(Base):
             ['id_lot_to', 'id_lot_malette_to'],
             ['lot.id_lot', 'lot.id_malette']))
 
-class Reconstruction(Base):
-    """ An openSFM reconstruction """
-    __tablename__ = "reconstruction"
-
-    id_reconstruction = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
-
-    # Reference lat Lon alt
-    id_ref_lla = sa.Column(sa.Integer, nullable=False)
-    id_ref_lla_malette = sa.Column(sa.Integer, nullable=False)
-    ref_lla = relationship(Sensors, foreign_keys=(id_ref_lla, id_ref_lla_malette))
-
-    raw_output_files = sa.Column(sa.String(100), nullable=False)
-    reconstruction_algo = sa.Column(sa.String(20), nullable=False)
-
-    id_campaign = sa.Column(sa.Integer, nullable=False)
-    id_campaign_malette = sa.Column(sa.Integer, nullable=False)
-    campaign = relationship(Campaign, foreign_keys=(id_campaign, id_campaign_malette))
-
-    __table_args__ = (
-        sa.ForeignKeyConstraint(
-            ['id_ref_lla', 'id_ref_lla_malette'],
-            ['sensors.id_sensors', 'sensors.id_malette']),
-        sa.ForeignKeyConstraint(
-            ['id_campaign', 'id_campaign_malette'],
-            ['campaign.id_campaign', 'campaign.id_malette']))
-
-class Shot(Base):
-    """ Reconstruction shot """
-    __tablename__ = "shot"
-    id_shot = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
-
-    orientation = sa.Column(sa.Integer)
-    camera = sa.Column(sa.String(250))
-    gps_pos = sa.Column(sa.types.ARRAY(sa.Float, dimensions=3), nullable=False)
-    gps_dop = sa.Column(sa.Float)
-    rotation = sa.Column(sa.types.ARRAY(sa.Float, dimensions=3), nullable=False)
-    translation = sa.Column(sa.types.ARRAY(sa.Float, dimensions=3), nullable=False)
-    capture_time = sa.Column(sa.Float)
-
-    id_reconstruction = sa.Column(sa.Integer, nullable=False)
-    id_reconstruction_malette = sa.Column(sa.Integer, nullable=False)
-    reconstruction = relationship(Reconstruction, foreign_keys=(id_reconstruction, id_reconstruction_malette))
-
-    id_panorama = sa.Column(sa.Integer, nullable=False)
-    id_panorama_malette = sa.Column(sa.Integer, nullable=False)
-    panorama = relationship(Panorama, foreign_keys=(id_panorama, id_panorama_malette))
-
-    id_corrected_sensors = sa.Column(sa.Integer)
-    id_corrected_sensors_malette = sa.Column(sa.Integer)
-    corrected_sensor = relationship(Sensors, foreign_keys=(id_corrected_sensors, id_corrected_sensors_malette))
-
-    __table_args__ = (
-        sa.ForeignKeyConstraint(
-            ['id_reconstruction', 'id_reconstruction_malette'],
-            ['reconstruction.id_reconstruction', 'reconstruction.id_malette']),
-        sa.ForeignKeyConstraint(
-            ['id_panorama', 'id_panorama_malette'],
-            ['panorama.id_panorama', 'panorama.id_malette']),
-        sa.ForeignKeyConstraint(
-            ['id_corrected_sensors', 'id_corrected_sensors_malette'],
-            ['sensors.id_sensors', 'sensors.id_malette']))
-
-class Path(Base):
-    """ Path between 2 shots """
-    __tablename__ = "path"
-    id_path = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True)
-
-    id_shot_from = sa.Column(sa.Integer, nullable=False)
-    id_shot_malette_from = sa.Column(sa.Integer, nullable=False)
-    shot_from = relationship(Shot, foreign_keys=(id_shot_from, id_shot_malette_from))
-
-    id_shot_to = sa.Column(sa.Integer, nullable=False)
-    id_shot_malette_to = sa.Column(sa.Integer, nullable=False)
-    shot_to = relationship(Shot, foreign_keys=(id_shot_to, id_shot_malette_to))
-
-    active = sa.Column(sa.Boolean, default=True)
-    pitch = sa.Column(sa.Float)
-    yaw = sa.Column(sa.Float)
-    target_pitch = sa.Column(sa.Float)
-    target_yaw = sa.Column(sa.Float)
-    manual = sa.Column(sa.Boolean, default=False)
-
-    __table_args__ = (
-        sa.ForeignKeyConstraint(
-            ['id_shot_from', 'id_shot_malette_from'],
-            ['shot.id_shot', 'shot.id_malette']),
-        sa.ForeignKeyConstraint(
-            ['id_shot_to', 'id_shot_malette_to'],
-            ['shot.id_shot', 'shot.id_malette']))
-
-# !!! Please refer to README.md if you change this model to commit it (database is versionned) !!!
+# !!! DO NOT CHANGE THIS MODEL !!!
