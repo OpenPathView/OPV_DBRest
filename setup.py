@@ -28,7 +28,8 @@ setup(
     entry_points={
         'console_scripts': [
             'opv-api=dbrest.__main__:main',
-            'opv-db-migrate=dbrest.database.create_or_update:main'
+            'opv-db-migrate=dbrest.database.create_or_update:main',
+            'opv-db-export=dbrest.export.__main__:main'
         ],
     }
 )
