@@ -66,6 +66,7 @@ class ExportDatasService():
         self.logger.debug("Dumping data with filter : %s, to file : %s", sql_filters, output_file)
 
         self._dump_service.sql_filters = sql_filters
+        self._dump_service.dump_file_path = output_file
         self._dump_service.dump(tables_to_export=tables_to_export)
 
     def generate_dm_list(self, tables_to_export: List[str], dm_columns=List[ColumnRef], sql_filters: str=None, output_list_file: str="datas_dm.txt"):
