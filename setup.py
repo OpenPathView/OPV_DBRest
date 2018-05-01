@@ -17,7 +17,6 @@ setup(
         "marshmallow-sqlalchemy",
         "SQLAlchemy",
         "psycopg2",
-        "opv_api_client",
         "gunicorn",
         "sqlalchemy-migrate",
         "docopt"
