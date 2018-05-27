@@ -1,5 +1,5 @@
 GeoAlchemy2==0.4.0
-hug==2.2.0
+hug==2.4.0
 marshmallow-sqlalchemy==0.13.1
 SQLAlchemy==1.1.9
 psycopg2==2.7.1
