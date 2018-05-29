@@ -1,4 +1,5 @@
 import hug
+import hug.middleware
 from falcon import HTTP_400, HTTP_201
 
 import json
@@ -10,9 +11,13 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from dbrest import schema, models, settings, db
 
 print("Config : ")
-print("Database : " + settings.engine_path)
-print("Debug : " + str(settings.debug))
-print("IDMalette : " + settings.IDMalette)
+print("Database :", settings.engine_path)
+print("Debug :", str(settings.debug))
+print("IDMalette :", settings.IDMalette)
+
+api = hug.API(__name__)
+
+api.http.add_middleware(hug.middleware.CORSMiddleware(api, ['*']))
 
 
 def generate_accessors(schm, version=1, name=None):
