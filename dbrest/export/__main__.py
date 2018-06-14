@@ -27,12 +27,12 @@ Arguments:
                              Eg : 'table1,table2,table3'
 
 Options:
-    -h --help                   Show this screen.
-    --filters=<SQL>             SQL filters. Eg: mytable.mycol = 'value' AND myothertable.toto LIKE 'titi'
-    --output-sql=<str>          Data will be dumped there. [default: dump.sql]
-    --output-dm-list-file=<str> Directory manager list, if dm ids needs to be exported. [Default: dm_uuids.txt]
-    --dm-cols=<str>             Wanted Directory manager uuids columns list. Eg : "panorama.equirectangular_path,lot.pictures_path"
-    --debug                     Set logs to debug.
+    -h --help                      Show this screen.
+    --filters=<SQL>                SQL filters. Eg: mytable.mycol = 'value' AND myothertable.toto LIKE 'titi'
+    --output-sql=<str>             Data will be dumped there. [default: dump.sql]
+    --output-dm-list-file=<str>    Directory manager list, if dm ids needs to be exported. [default: dm_uuids.txt]
+    --dm-cols=<str>                Wanted Directory manager uuids columns list. Eg : "panorama.equirectangular_path,lot.pictures_path"
+    --debug                        Set logs to debug.
 """
 
 import logging
