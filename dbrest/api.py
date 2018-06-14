@@ -1,4 +1,5 @@
 import hug
+import hug.middleware
 from falcon import HTTP_400, HTTP_201
 
 import json
@@ -10,20 +11,26 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from dbrest import schema, models, settings, db
 
 print("Config : ")
-print("Database : " + settings.engine_path)
-print("Debug : " + str(settings.debug))
-print("IDMalette : " + settings.IDMalette)
+print("Database :", settings.engine_path)
+print("Debug :", str(settings.debug))
+print("IDMalette :", settings.IDMalette)
 
-def generate_accessors(schm, version=1):
+api = hug.API(__name__)
+
+api.http.add_middleware(hug.middleware.CORSMiddleware(api, ['*']))
+
+
+def generate_accessors(schm, version=1, name=None):
     """Will generate GET, POST and PUT/PATCH for the model contained by the schema
 
     Args:
         schem: a marshmallow-sqlalchemy's Schema instance
         path (str): the path where you will find the ressource if path is None, will use the __tablename__ of the model
+        name: A custom name that will be used the path
         version (int): the version of the ressource
     """
     model = schm.Meta.model
-    model_name = model.__tablename__
+    model_name = model.__tablename__ if not name else name
 
     mapper = sainspect(model)
     pks = mapper.primary_key
@@ -168,6 +175,7 @@ def within(id_malette, id_sensors, n: hug.types.number, response):
 
     return schm.dump(insts, many=True).data
 
+
 db.create_all()
 
 generate_accessors(schema.CampaignSchema())
@@ -175,6 +183,7 @@ generate_accessors(schema.PanoramaSchema())
 generate_accessors(schema.SensorsSchema())
 generate_accessors(schema.TileSchema())
 generate_accessors(schema.LotSchema())
+generate_accessors(schema.LotWithSensorsSchema(), name='lot/with_sensors')
 generate_accessors(schema.CpSchema())
 generate_accessors(schema.TrackEdgeSchema())
 generate_accessors(schema.ReconstructionSchema())

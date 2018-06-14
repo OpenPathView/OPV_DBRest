@@ -6,8 +6,9 @@ import json
 from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge, Reconstruction, Shot, Path
 from dbrest.db import session
 
-__all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'SensorsSchema', 'TileSchema',
-           'TrackEdgeSchema', 'ReconstructionSchema', 'ShotSchema', 'PathSchema']
+__all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'LotWithSensorsSchema',
+           'SensorsSchema', 'TileSchema', 'TrackEdgeSchema',
+           'ReconstructionSchema', 'ShotSchema', 'PathSchema']
 
 class BaseSchema(ModelSchema):
     def __init__(self, *args, **kwargs):
@@ -78,6 +79,11 @@ class CpSchema(BaseSchema):
         model = Cp
 
 class LotSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = Lot
+
+class LotWithSensorsSchema(BaseSchema):
+    sensors = fields.Nested('SensorsSchema')
     class Meta(BaseSchema.Meta):
         model = Lot
 

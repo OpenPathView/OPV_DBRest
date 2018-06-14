@@ -73,7 +73,7 @@ opv-db-migrate --db-uri="postgres://USER:PWD@HOST/DB"
 ```
 You should run this script after each code update.
 
-# Commit change on datbase model
+# Commit change on database model
 The database model is versionned using sqlalchemy-migrate module.
 Before making any change make sure you have a running database with the latest version of the model, launch `opv-db-migrate` before making any change.
 When you change `model.py` you need to commit your changes using the following command line :
