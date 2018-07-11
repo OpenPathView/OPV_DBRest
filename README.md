@@ -57,7 +57,7 @@ tar -zcvf /tmp/dm_archive.tar.gz -T /tmp/dms.txt
 
 For instance to export all panorama of campaign 2 in the view box (), with the directory UUIDs list of the equirectangular files :
 ```bash
-opv-db-export "postgres://opv:pwd@locahost/opv" "panorama" --filters="campaign.id_campaign=85" --output-dm-list-file="/tmp/dms.txt" --output-sql="/tmp/export_dump.sql" --dm-cols="panorama.equirectangular_path,lot.pictures_path" --debug
+opv-db-export "postgres://opv:pwd@localhost/opv" "panorama" --filters="campaign.id_campaign=85" --output-dm-list-file="/tmp/dms.txt" --output-sql="/tmp/export_dump.sql" --dm-cols="panorama.equirectangular_path,lot.pictures_path" --debug
 # Make an archive with directory manager uuids
 # go to your directory manager folder
 tar -zcvf /tmp/dm_archive.tar.gz -T /tmp/dms.txt
@@ -65,6 +65,8 @@ tar -zcvf /tmp/dm_archive.tar.gz -T /tmp/dms.txt
 PGPASSWORD=pwd psql -U opv opv < /tmp/export_dump.sql
 # For directory manager simplfy uncompress it in the correct folder
 ```
+
+If you have installed postgres using our Ansible script the above exemple should be executed with 'opv' user even the psql command line. Otherwise you will get a peer connexion error because we have configured authentication methods as md5 (user/password) only for opv in pg_hba.conf.
 
 # Migrate or update your existing database
 To migrate or update your existing database to the latest model/schema version simply run :
