@@ -289,4 +289,163 @@ class Path(Base):
             ['id_shot_to', 'id_shot_malette_to'],
             ['shot.id_shot', 'shot.id_malette']))
 
+
+# ---- Virtual tour roads/paths ----
+
+class PathNode(Base):
+    """ Describe a path node, panorama """
+    __tablename__ = "path_node"
+    id_path_node = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True)
+
+    id_panorama = sa.Column(sa.Integer, nullable=False)
+    id_panorama_malette = sa.Column(sa.Integer, nullable=False)
+    panorama = relationship(Panorama, foreign_keys=(id_panorama, id_panorama_malette))
+
+    id_path_details = sa.Column(sa.Integer, nullable=False)
+    id_path_details_malette = sa.Column(sa.Integer, nullable=False)
+    path_details = relationship('PathDetails')
+
+    disabled = sa.Column(sa.Boolean, nullable=True)
+    hotspot = sa.Column(sa.Boolean, nullable=True)
+
+    __table_args__ = (
+        sa.ForeignKeyConstraint(
+            ['id_panorama', 'id_panorama_malette'],
+            ['panorama.id_panorama', 'panorama.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_path_details', 'id_path_details_malette'],
+            ['path_details.id_path_details', 'path_details.id_malette']))
+
+
+class PathDetails(Base):
+    """ Describe a path """
+    __tablename__ = "path_details"
+    id_path_details = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True)
+
+    name = sa.Column(sa.String(70))
+    decription = sa.Column(sa.String(250))
+
+    id_start_node = sa.Column(sa.Integer, nullable=False)
+    id_start_node_malette = sa.Column(sa.Integer, nullable=False)
+    start_node = relationship(PathNode, foreign_keys=(id_start_node, id_start_node_malette))
+
+    id_stop_node = sa.Column(sa.Integer, nullable=False)
+    id_stop_node_malette = sa.Column(sa.Integer, nullable=False)
+    stop_node = relationship(PathNode, foreign_keys=(id_stop_node, id_stop_node_malette))
+
+    id_campaign = sa.Column(sa.Integer, nullable=False)
+    id_campaign_malette = sa.Column(sa.Integer, nullable=False)
+    campaign = relationship(Campaign, foreign_keys=(id_campaign, id_campaign_malette))
+
+    __table_args__ = (
+        sa.ForeignKeyConstraint(
+            ['id_start_node', 'id_start_node_malette'],
+            ['path_node.id_path_node', 'path_node.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_stop_node', 'id_stop_node_malette'],
+            ['path_node.id_path_node', 'path_node.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_campaign', 'id_campaign_malette'],
+            ['campaign.id_campaign', 'campaign.id_malette']))
+
+
+class PathEdge(Base):
+    """ Graph edges """
+    __tablename__ = "path_edge"
+    id_path_edge = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True)
+
+    source_id_path_node = sa.Column(sa.Integer, nullable=False)
+    source_id_path_node_malette = sa.Column(sa.Integer, nullable=False)
+    source_path_node = relationship(PathNode, foreign_keys=(source_id_path_node, source_id_path_node_malette))
+
+    dest_id_path_node = sa.Column(sa.Integer, nullable=False)
+    dest_id_path_node_malette = sa.Column(sa.Integer, nullable=False)
+    dest_path_node = relationship(PathNode, foreign_keys=(dest_id_path_node, dest_id_path_node_malette))
+
+    id_path_details = sa.Column(sa.Integer, nullable=False)
+    id_path_details_malette = sa.Column(sa.Integer, nullable=False)
+    path_details = relationship('PathDetails')
+
+    __table_args__ = (
+        sa.ForeignKeyConstraint(
+            ['source_id_path_node', 'source_id_path_node_malette'],
+            ['path_node.id_path_node', 'path_node.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['dest_id_path_node', 'dest_id_path_node_malette'],
+            ['path_node.id_path_node', 'path_node.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_path_details', 'id_path_details_malette'],
+            ['path_details.id_path_details', 'path_details.id_malette']))
+
+
+# --- TODO : the view with ORM : https://stackoverflow.com/questions/9766940/how-to-create-an-sql-view-with-sqlalchemy#
+
+
+# ---- Virtual tours, final render data for viewer/embed ----
+
+class Virtualtour(Base):
+    """ Virtualtour """
+    __tablename__ = "virtualtour"
+    virtualtour = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True)
+
+    title = sa.Column(sa.String(100))
+    decription = sa.Column(sa.String(350))
+
+
+class VirtualtourPath(Base):
+    """ Path included in each virtual tours """
+    __tablename__ = "virtualtour_path"
+    id_virtualtour_path = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True)
+
+    id_virtualtour = sa.Column(sa.Integer, nullable=False)
+    id_virtualtour_malette = sa.Column(sa.Integer, nullable=False)
+    virtualtour = relationship(Virtualtour, foreign_keys=(id_virtualtour, id_virtualtour_malette))
+
+    id_path_details = sa.Column(sa.Integer, nullable=False)
+    id_path_details_malette = sa.Column(sa.Integer, nullable=False)
+    path_details = relationship('PathDetails')
+
+    __table_args__ = (
+        sa.ForeignKeyConstraint(
+            ['id_virtualtour', 'id_virtualtour_malette'],
+            ['virtualtour.virtualtour', 'virtualtour.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_path_details', 'id_path_details_malette'],
+            ['path_details.id_path_details', 'path_details.id_malette']))
+
+
+class VirtualtourHihlight(Base):
+    """ Interesting points for the virtual tour """
+    __tablename__ = "virtualtour_highlight"
+    id_virtualtour_highlight = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True)
+
+    id_virtualtour = sa.Column(sa.Integer, nullable=False)
+    id_virtualtour_malette = sa.Column(sa.Integer, nullable=False)
+    virtualtour = relationship(Virtualtour, foreign_keys=(id_virtualtour, id_virtualtour_malette))
+
+    id_path_node = sa.Column(sa.Integer, nullable=False)
+    id_path_node_malette = sa.Column(sa.Integer, nullable=False)
+    path_node = relationship(PathNode, foreign_keys=(id_path_node, id_path_node_malette))
+
+    pitch = sa.Column(sa.Float)
+    yaw = sa.Column(sa.Float)
+    hfov = sa.Column(sa.Float)
+
+    data = sa.Column(sa.String(900))
+
+    __table_args__ = (
+        sa.ForeignKeyConstraint(
+            ['id_virtualtour', 'id_virtualtour_malette'],
+            ['virtualtour.virtualtour', 'virtualtour.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_path_node', 'id_path_node_malette'],
+            ['path_node.id_path_node', 'path_node.id_malette']))
+
+
 # !!! Please refer to README.md if you change this model to commit it (database is versionned) !!!
