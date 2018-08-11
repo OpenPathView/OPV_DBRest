@@ -339,12 +339,12 @@ class PathDetails(Base):
     name = sa.Column(sa.String(70))
     decription = sa.Column(sa.String(250))
 
-    id_start_node = sa.Column(sa.Integer, nullable=False)
-    id_start_node_malette = sa.Column(sa.Integer, nullable=False)
+    id_start_node = sa.Column(sa.Integer, nullable=True)
+    id_start_node_malette = sa.Column(sa.Integer, nullable=True)
     start_node = relationship(PathNode, foreign_keys=(id_start_node, id_start_node_malette))
 
-    id_stop_node = sa.Column(sa.Integer, nullable=False)
-    id_stop_node_malette = sa.Column(sa.Integer, nullable=False)
+    id_stop_node = sa.Column(sa.Integer, nullable=True)
+    id_stop_node_malette = sa.Column(sa.Integer, nullable=True)
     stop_node = relationship(PathNode, foreign_keys=(id_stop_node, id_stop_node_malette))
 
     id_campaign = sa.Column(sa.Integer, nullable=False)
