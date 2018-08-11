@@ -176,7 +176,7 @@ def within(id_malette, id_sensors, n: hug.types.number, response):
     return schm.dump(insts, many=True).data
 
 
-db.create_all()
+# db.create_all()  # No more needed has the database needs to be upgraded before
 
 generate_accessors(schema.CampaignSchema())
 generate_accessors(schema.PanoramaSchema())
@@ -189,3 +189,10 @@ generate_accessors(schema.TrackEdgeSchema())
 generate_accessors(schema.ReconstructionSchema())
 generate_accessors(schema.ShotSchema())
 generate_accessors(schema.PathSchema())
+generate_accessors(schema.PathNodeSchema())
+generate_accessors(schema.PathDetailsSchema())
+generate_accessors(schema.PathEdgeSchema())
+generate_accessors(schema.PathNodesExtendedSchema())
+generate_accessors(schema.VirtualtourSchema())
+generate_accessors(schema.VirtualtourPathSchema())
+generate_accessors(schema.VirtualtourHihlightSchema())

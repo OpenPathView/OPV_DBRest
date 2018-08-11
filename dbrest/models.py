@@ -316,7 +316,7 @@ class PathNode(Base):
 
     id_path_details = sa.Column(sa.Integer, nullable=False)
     id_path_details_malette = sa.Column(sa.Integer, nullable=False)
-    path_details = relationship('PathDetails')
+    path_details = relationship('PathDetails', foreign_keys=(id_path_details, id_path_details_malette))
 
     disabled = sa.Column(sa.Boolean, nullable=True)
     hotspot = sa.Column(sa.Boolean, nullable=True)
@@ -413,6 +413,8 @@ class PathNodesExtended(Base):
 
     __table__.primary_key = [__table__.c.id_path_node, __table__.c.id_malette]
 
+    __tablename__ = "path_node_extended"
+
 
 # ---- Virtual tours, final render data for viewer/embed ----
 
@@ -468,6 +470,8 @@ class VirtualtourHihlight(Base):
     hfov = sa.Column(sa.Float)
 
     data = sa.Column(sa.String(900))
+
+    virtualtour = relationship(Virtualtour, backref=backref('virtualtour'))
 
     __table_args__ = (
         sa.ForeignKeyConstraint(

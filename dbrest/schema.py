@@ -3,7 +3,7 @@ from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields, decorators, ValidationError
 import json
 
-from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge, Reconstruction, Shot, Path, PathNode, PathDetails, PathEdge, Virtualtour, VirtualtourPath, VirtualtourHihlight
+from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge, Reconstruction, Shot, Path, PathNode, PathDetails, PathEdge, PathNodesExtended, Virtualtour, VirtualtourPath, VirtualtourHihlight
 from dbrest.db import session
 
 __all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'LotWithSensorsSchema',
@@ -134,6 +134,11 @@ class PathEdgeSchema(BaseSchema):
         model = PathEdge
 
 
+class PathNodesExtendedSchema(BaseSchema):
+    gps_pos = GeoJSON()
+
+    class Meta(BaseSchema.Meta):
+        model = PathNodesExtended
 
 
 # ---- Virtual tours, final render data for viewer/embed ----
