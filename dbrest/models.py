@@ -276,7 +276,7 @@ class Path(Base):
     """ Path between 2 shots """
     __tablename__ = "path"
     id_path = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     id_shot_from = sa.Column(sa.Integer, nullable=False)
     id_shot_malette_from = sa.Column(sa.Integer, nullable=False)
@@ -308,7 +308,7 @@ class PathNode(Base):
     """ Describe a path node, panorama """
     __tablename__ = "path_node"
     id_path_node = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     id_panorama = sa.Column(sa.Integer, nullable=False)
     id_panorama_malette = sa.Column(sa.Integer, nullable=False)
@@ -334,7 +334,7 @@ class PathDetails(Base):
     """ Describe a path """
     __tablename__ = "path_details"
     id_path_details = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     name = sa.Column(sa.String(70))
     decription = sa.Column(sa.String(250))
@@ -367,7 +367,7 @@ class PathEdge(Base):
     """ Graph edges """
     __tablename__ = "path_edge"
     id_path_edge = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     source_id_path_node = sa.Column(sa.Integer, nullable=False)
     source_id_path_node_malette = sa.Column(sa.Integer, nullable=False)
@@ -422,7 +422,7 @@ class Virtualtour(Base):
     """ Virtualtour """
     __tablename__ = "virtualtour"
     id_virtualtour = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     title = sa.Column(sa.String(100))
     decription = sa.Column(sa.String(350))
@@ -432,7 +432,7 @@ class VirtualtourPath(Base):
     """ Path included in each virtual tours """
     __tablename__ = "virtualtour_path"
     id_virtualtour_path = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     id_virtualtour = sa.Column(sa.Integer, nullable=False)
     id_virtualtour_malette = sa.Column(sa.Integer, nullable=False)
@@ -455,7 +455,7 @@ class VirtualtourHihlight(Base):
     """ Interesting points for the virtual tour """
     __tablename__ = "virtualtour_highlight"
     id_virtualtour_highlight = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    id_malette = sa.Column(sa.Integer, primary_key=True)
+    id_malette = sa.Column(sa.Integer, primary_key=True, default=get_malette_id())
 
     id_virtualtour = sa.Column(sa.Integer, nullable=False)
     id_virtualtour_malette = sa.Column(sa.Integer, nullable=False)
