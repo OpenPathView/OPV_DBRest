@@ -25,8 +25,10 @@ from geoalchemy2 import Geography
 import json
 
 from dbrest.helpers import get_malette_id
+from dbrest.commons import view
 
 Base = declarative_base()
+
 
 class GeoJSONGeography(Geography):
     """Allow to get and to return a GeoJSON object instead of WKB"""
@@ -39,7 +41,9 @@ class GeoJSONGeography(Geography):
                 return json.loads(value)
             except:
                 return
+
         return process
+
 
 class Campaign(Base):
     __tablename__ = "campaign"
@@ -50,6 +54,7 @@ class Campaign(Base):
     name = sa.Column(sa.String(50))
     decription = sa.Column(sa.String(150))
     id_rederbro = sa.Column(sa.Integer)
+
 
 class Sensors(Base):
     __tablename__ = "sensors"
@@ -62,6 +67,7 @@ class Sensors(Base):
     # Compass
     degrees = sa.Column(sa.Float)
     minutes = sa.Column(sa.Float)
+
 
 class Lot(Base):
     __tablename__ = "lot"
@@ -98,6 +104,7 @@ class Lot(Base):
             ['tile.id_tile', 'tile.id_malette'])
     )
 
+
 class Cp(Base):
     __tablename__ = "cp"
 
@@ -121,6 +128,7 @@ class Cp(Base):
             ['lot.id_lot', 'lot.id_malette']),
     )
 
+
 class Panorama(Base):
     __tablename__ = "panorama"
 
@@ -139,6 +147,7 @@ class Panorama(Base):
             ['id_cp', 'id_cp_malette'],
             ['cp.id_cp', 'cp.id_malette']),
     )
+
 
 class Tile(Base):
     __tablename__ = "tile"
@@ -174,8 +183,8 @@ class TrackEdge(Base):
     id_lot_from = sa.Column(sa.Integer, nullable=False)
     id_lot_malette_from = sa.Column(sa.Integer, nullable=False)
     lot_from = relationship(Lot, backref=backref('track_edges'),
-                                 foreign_keys=(id_lot_from,
-                                               id_lot_malette_from))
+                            foreign_keys=(id_lot_from,
+                                          id_lot_malette_from))
 
     id_lot_to = sa.Column(sa.Integer, nullable=False)
     id_lot_malette_to = sa.Column(sa.Integer, nullable=False)
@@ -195,6 +204,7 @@ class TrackEdge(Base):
         sa.ForeignKeyConstraint(
             ['id_lot_to', 'id_lot_malette_to'],
             ['lot.id_lot', 'lot.id_malette']))
+
 
 class Reconstruction(Base):
     """ An openSFM reconstruction """
@@ -222,6 +232,7 @@ class Reconstruction(Base):
         sa.ForeignKeyConstraint(
             ['id_campaign', 'id_campaign_malette'],
             ['campaign.id_campaign', 'campaign.id_malette']))
+
 
 class Shot(Base):
     """ Reconstruction shot """
@@ -259,6 +270,7 @@ class Shot(Base):
         sa.ForeignKeyConstraint(
             ['id_corrected_sensors', 'id_corrected_sensors_malette'],
             ['sensors.id_sensors', 'sensors.id_malette']))
+
 
 class Path(Base):
     """ Path between 2 shots """
@@ -381,7 +393,25 @@ class PathEdge(Base):
             ['path_details.id_path_details', 'path_details.id_malette']))
 
 
-# --- TODO : the view with ORM : https://stackoverflow.com/questions/9766940/how-to-create-an-sql-view-with-sqlalchemy#
+class PathNodesExtended(Base):
+    """ View of path_node with sensors data added """
+
+    __table__ = view(
+        'path_node_extended', Base.metadata,
+        sa.select([
+            PathNode.id_path_node, PathNode.id_malette, PathNode.id_panorama, PathNode.id_panorama_malette,
+            PathNode.id_path_details, PathNode.id_path_details_malette, PathNode.disabled, PathNode.hotspot,
+            Sensors.gps_pos, Sensors.degrees, Sensors.minutes, Sensors.id_sensors,
+            Sensors.id_malette.label('id_sensors_malette')
+        ]). \
+            select_from(PathNode.__table__. \
+            join(Panorama.__table__). \
+            join(Cp.__table__). \
+            join(Lot.__table__). \
+            join(Sensors.__table__))
+    )
+
+    __table__.primary_key = [__table__.c.id_path_node, __table__.c.id_malette]
 
 
 # ---- Virtual tours, final render data for viewer/embed ----
@@ -389,7 +419,7 @@ class PathEdge(Base):
 class Virtualtour(Base):
     """ Virtualtour """
     __tablename__ = "virtualtour"
-    virtualtour = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id_virtualtour = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     id_malette = sa.Column(sa.Integer, primary_key=True)
 
     title = sa.Column(sa.String(100))
@@ -413,7 +443,7 @@ class VirtualtourPath(Base):
     __table_args__ = (
         sa.ForeignKeyConstraint(
             ['id_virtualtour', 'id_virtualtour_malette'],
-            ['virtualtour.virtualtour', 'virtualtour.id_malette']),
+            ['virtualtour.id_virtualtour', 'virtualtour.id_malette']),
         sa.ForeignKeyConstraint(
             ['id_path_details', 'id_path_details_malette'],
             ['path_details.id_path_details', 'path_details.id_malette']))
@@ -442,10 +472,9 @@ class VirtualtourHihlight(Base):
     __table_args__ = (
         sa.ForeignKeyConstraint(
             ['id_virtualtour', 'id_virtualtour_malette'],
-            ['virtualtour.virtualtour', 'virtualtour.id_malette']),
+            ['virtualtour.id_virtualtour', 'virtualtour.id_malette']),
         sa.ForeignKeyConstraint(
             ['id_path_node', 'id_path_node_malette'],
             ['path_node.id_path_node', 'path_node.id_malette']))
-
 
 # !!! Please refer to README.md if you change this model to commit it (database is versionned) !!!

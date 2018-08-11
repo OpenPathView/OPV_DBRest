@@ -134,6 +134,8 @@ class PathEdgeSchema(BaseSchema):
         model = PathEdge
 
 
+
+
 # ---- Virtual tours, final render data for viewer/embed ----
 class VirtualtourSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
