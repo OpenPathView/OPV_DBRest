@@ -98,6 +98,7 @@ def generate_accessors(schm, version=1, name=None):
         except SQLAlchemyError as err:
             schm.Meta.sqla_session.rollback()  # uncommit ! It doesn't works ! :-(
             response.status = HTTP_400
+            print(err)
             return "Sqlalchemy didn't like it {}".format(err.__class__)
 
         response.status = HTTP_201

@@ -1,26 +1,27 @@
 from sqlalchemy import *
 from migrate import *
 
+from dbrest.helpers import get_malette_id
 
 from migrate.changeset import schema
 pre_meta = MetaData()
 post_meta = MetaData()
 path_details = Table('path_details', post_meta,
     Column('id_path_details', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, nullable=False, default=get_malette_id()),
     Column('name', String(length=70)),
     Column('decription', String(length=250)),
-    Column('id_start_node', Integer, nullable=False),
-    Column('id_start_node_malette', Integer, nullable=False),
-    Column('id_stop_node', Integer, nullable=False),
-    Column('id_stop_node_malette', Integer, nullable=False),
+    Column('id_start_node', Integer, nullable=True),
+    Column('id_start_node_malette', Integer, nullable=True),
+    Column('id_stop_node', Integer, nullable=True),
+    Column('id_stop_node_malette', Integer, nullable=True),
     Column('id_campaign', Integer, nullable=False),
     Column('id_campaign_malette', Integer, nullable=False),
 )
 
 path_edge = Table('path_edge', post_meta,
     Column('id_path_edge', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, nullable=False, default=get_malette_id()),
     Column('source_id_path_node', Integer, nullable=False),
     Column('source_id_path_node_malette', Integer, nullable=False),
     Column('dest_id_path_node', Integer, nullable=False),
@@ -31,7 +32,7 @@ path_edge = Table('path_edge', post_meta,
 
 path_node = Table('path_node', post_meta,
     Column('id_path_node', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, nullable=False, default=get_malette_id()),
     Column('id_panorama', Integer, nullable=False),
     Column('id_panorama_malette', Integer, nullable=False),
     Column('id_path_details', Integer, nullable=False),
@@ -42,14 +43,14 @@ path_node = Table('path_node', post_meta,
 
 virtualtour = Table('virtualtour', post_meta,
     Column('id_virtualtour', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, nullable=False, default=get_malette_id()),
     Column('title', String(length=100)),
     Column('decription', String(length=350)),
 )
 
 virtualtour_highlight = Table('virtualtour_highlight', post_meta,
     Column('id_virtualtour_highlight', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, nullable=False, default=get_malette_id()),
     Column('id_virtualtour', Integer, nullable=False),
     Column('id_virtualtour_malette', Integer, nullable=False),
     Column('id_path_node', Integer, nullable=False),
@@ -62,7 +63,7 @@ virtualtour_highlight = Table('virtualtour_highlight', post_meta,
 
 virtualtour_path = Table('virtualtour_path', post_meta,
     Column('id_virtualtour_path', Integer, primary_key=True, nullable=False),
-    Column('id_malette', Integer, primary_key=True, nullable=False),
+    Column('id_malette', Integer, primary_key=True, nullable=False, default=get_malette_id()),
     Column('id_virtualtour', Integer, nullable=False),
     Column('id_virtualtour_malette', Integer, nullable=False),
     Column('id_path_details', Integer, nullable=False),
