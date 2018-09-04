@@ -15,7 +15,7 @@ setup(
         "git+https://github.com/OpenPathView/pg-dump-filtered@v0.2#egg=pg_dump_filtered"
     ],
     install_requires=[
-        "GeoAlchemy2",
+        "GeoAlchemy2==0.5.0",
         "hug",
         "marshmallow-sqlalchemy",
         "SQLAlchemy",

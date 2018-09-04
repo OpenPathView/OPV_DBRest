@@ -32,8 +32,8 @@ Base = declarative_base()
 
 class GeoJSONGeography(Geography):
     """Allow to get and to return a GeoJSON object instead of WKB"""
-    as_binary = 'ST_AsGeoJSON'
-    from_text = 'ST_GeomFromGeoJSON'
+    as_binary = 'AsGeoJSON'
+    from_text = 'GeomFromGeoJSON'
 
     def result_processor(self, dialect, coltype):
         def process(value):
