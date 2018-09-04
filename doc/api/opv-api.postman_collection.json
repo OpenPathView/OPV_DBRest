@@ -1,0 +1,667 @@
+{
+	"info": {
+		"_postman_id": "2d5d013a-bb4e-4cf5-a4d6-9d5f45c476e4",
+		"name": "opv-api",
+		"description": "Collection of OPV API (DBRest) requests.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Campaign - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1b9db9ac-90f8-4909-82a6-41df77bea506",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_campaign\", jsonData.id_campaign);",
+							"postman.setEnvironmentVariable(\"last_id_campaign_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"PostmanTestCampaign\",\n\t\"description\": \"A test campaign\"\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/campaign/",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"campaign",
+						""
+					]
+				},
+				"description": "Create a campaign."
+			},
+			"response": []
+		},
+		{
+			"name": "Sensors - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "588700d0-9e79-433c-abae-c7628cb46bfe",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_sensors\", jsonData.id_sensors);",
+							"postman.setEnvironmentVariable(\"last_id_sensors_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"degrees\": 42,\n\t\"minutes\": 3,\n\t\"gps_pos\": {\n\t\t\"type\": \"Point\",\n\t\t\"coordinates\": [48.405537, -4.448857, \t47.685]\n\t}\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/sensors/",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"sensors",
+						""
+					]
+				},
+				"description": "Create a campaign."
+			},
+			"response": []
+		},
+		{
+			"name": "Lot - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "963901ab-f495-43a7-99db-a49ef9752fc9",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_lot\", jsonData.id_lot);",
+							"postman.setEnvironmentVariable(\"last_id_lot_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"campaign\": {\n\t\t\"id_campaign\": \"{{last_id_campaign}}\",\n\t\t\"id_malette\": \"{{last_id_campaign_malette}}\"\n\t},\n\t\"takenDate\": \"2018-06-16T01:26:02+00:00\",\n\t\"goprofailed\": 63,\n\t\"pictures_path\": \"POC-BIDON-78daf810-a0aa-11e8-8c27-00163e22b7fe\",\n\t\"sensors\": {\n\t\t\"id_sensors\": \"{{last_id_sensors}}\",\n\t\t\"id_malette\": \"{{last_id_sensors_malette}}\"\n\t}\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/lot/",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"lot",
+						""
+					]
+				},
+				"description": "Create a campaign."
+			},
+			"response": []
+		},
+		{
+			"name": "CP - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c6b388a9-34ff-495b-a463-19f8fee48199",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_cp\", jsonData.id_cp);",
+							"postman.setEnvironmentVariable(\"last_id_cp_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"lot\": {\n\t\t\"id_lot\": \"{{last_id_lot}}\",\n\t\t\"id_malette\": \"{{last_id_lot_malette}}\"\n\t},\n\t\"search_algo_version\": \"0.0.1\",\n\t\"stichable\": true,\n\t\"pto_dir\": \"POC-BIDON-ad77ecf8-a0b0-11e8-8c27-00163e22b7fe\",\n\t\"optimized\": true,\n\t\"nb_cp\": 101\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/cp/",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"cp",
+						""
+					]
+				},
+				"description": "Create a campaign."
+			},
+			"response": []
+		},
+		{
+			"name": "Panorama - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "884ac932-188f-4c1c-a0f0-0e8256f18a20",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_panorama\", jsonData.id_panorama);",
+							"postman.setEnvironmentVariable(\"last_id_panorama_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"is_photosphere\": true,\n\t\"equirectangular_path\": \"POC-BIDON-49255658-a0ad-11e8-8c27-00163e22b7fe\",\n\t\"cp\": {\n\t\t\"id_cp\": \"{{last_id_cp}}\",\n\t\t\"id_malette\": \"{{last_id_cp_malette}}\"\n\t}\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/panorama",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"panorama"
+					]
+				},
+				"description": "Create a campaign."
+			},
+			"response": []
+		},
+		{
+			"name": "Tile - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "014e8641-890e-4aa3-97a3-8ddd3cb4721f",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_tile\", jsonData.id_tile);",
+							"postman.setEnvironmentVariable(\"last_id_tile_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"extension\": \"jpg\",\n\t\"panorama\": {\n\t\t\"id_panorama\": \"{{last_id_panorama}}\",\n\t\t\"id_malette\": \"{{last_id_panorama_malette}}\"\n\t},\n\t\"cube_resolution\": 2960,\n\t\"param_location\": \"POC-BIDON-6d7dadb6-a0ad-11e8-8c27-00163e22b7fe\",\n\t\"max_level\": 4,\n\t\"resolution\": 512,\n\t\"fallback_path\": \"POC-BIDON-70649333-a0ad-11e8-8c27-00163e22b7fe\"\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/tile",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"tile"
+					]
+				},
+				"description": "Create a campaign."
+			},
+			"response": []
+		},
+		{
+			"name": "path_details - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d6ca3e2-c99f-46ae-b792-0ab26c19a44e",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_path_details\", jsonData.id_path_details);",
+							"postman.setEnvironmentVariable(\"last_id_path_details_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"My postamn test path\",\n\t\"description\": \"created with the postman collection\",\n\t\"campaign\": {\n\t\t\"id_campaign\": \"{{last_id_campaign}}\",\n\t\t\"id_malette\": \"{{last_id_campaign_malette}}\"\n\t}\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/path_details",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"path_details"
+					]
+				},
+				"description": "Create a path_detail, represent a path globally."
+			},
+			"response": []
+		},
+		{
+			"name": "path_details - update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7b6d3afd-db9b-438e-9469-bb014a1f4aec",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_path_details\", jsonData.id_path_details);",
+							"postman.setEnvironmentVariable(\"last_id_path_details_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"campaign\": {\n\t\t\"id_campaign\": \"{{last_id_campaign}}\",\n\t\t\"id_malette\": \"{{last_id_campaign_malette}}\"\n\t},\n    \"name\": \"My postamn test path updated\",\n    \"start_node\": {\n\t\t\"id_path_node\": \"{{last_id_path_node}}\",\n\t\t\"id_malette\": \"{{last_id_path_node_malette}}\"\n\t},\n\t\"stop_node\": {\n\t\t\"id_path_node\": \"{{last_id_path_node}}\",\n\t\t\"id_malette\": \"{{last_id_path_node_malette}}\"\n\t},\n    \"decription\": \"created with the postman collection, updated\",\n    \"id_path_details\": \"{{last_id_path_details}}\",\n    \"id_malette\": \"{{last_id_path_details_malette}}\"\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/path_details/{{last_id_path_details}}/{{last_id_path_details_malette}}",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"path_details",
+						"{{last_id_path_details}}",
+						"{{last_id_path_details_malette}}"
+					]
+				},
+				"description": "Show how to add start and end path_node. You need path_nodes todo that !"
+			},
+			"response": []
+		},
+		{
+			"name": "path_details - update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "587a9bbe-9814-4d15-9324-800871c06fca",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_path_details\", jsonData.id_path_details);",
+							"postman.setEnvironmentVariable(\"last_id_path_details_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"campaign\": {\n\t\t\"id_campaign\": \"{{last_id_campaign}}\",\n\t\t\"id_malette\": \"{{last_id_campaign_malette}}\"\n\t},\n    \"name\": \"My postamn test path updated\",\n    \"start_node\": {\n\t\t\"id_path_node\": \"{{last_id_path_node}}\",\n\t\t\"id_malette\": \"{{last_id_path_node_malette}}\"\n\t},\n\t\"stop_node\": {\n\t\t\"id_path_node\": \"{{last_id_path_node}}\",\n\t\t\"id_malette\": \"{{last_id_path_node_malette}}\"\n\t},\n    \"decription\": \"created with the postman collection, updated\",\n    \"id_path_details\": \"{{last_id_path_details}}\",\n    \"id_malette\": \"{{last_id_path_details_malette}}\"\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/path_details/{{last_id_path_details}}/{{last_id_path_details_malette}}",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"path_details",
+						"{{last_id_path_details}}",
+						"{{last_id_path_details_malette}}"
+					]
+				},
+				"description": "Show how to display a path detail."
+			},
+			"response": []
+		},
+		{
+			"name": "path_node - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c8c5cf0b-5df9-45d5-aba9-d0731f4fa8ee",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_path_node\", jsonData.id_path_node);",
+							"postman.setEnvironmentVariable(\"last_id_path_node_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"panorama\": {\n\t\t\"id_panorama\": \"{{last_id_panorama}}\",\n\t\t\"id_malette\": \"{{last_id_panorama_malette}}\"\n\t},\n\t\"path_details\": {\n\t\t\"id_path_details\": \"{{last_id_path_details}}\",\n\t\t\"id_malette\": \"{{last_id_path_details_malette}}\"\n\t},\n\t\"disabled\": \"false\",\n\t\"hotspot\": \"false\"\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/path_node",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"path_node"
+					]
+				},
+				"description": "Create a path_node, from last panorama."
+			},
+			"response": []
+		},
+		{
+			"name": "path_node - update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c94d2657-75f4-48fc-a2b1-fdcea17b1b6c",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_path_node\", jsonData.id_path_node);",
+							"postman.setEnvironmentVariable(\"last_id_path_node_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id_malette\": \"{{last_id_path_node_malette}}\",\n    \"panorama\": {\n        \"id_malette\": \"{{last_id_panorama_malette}}\",\n        \"id_panorama\": \"{{last_id_panorama}}\"\n    },\n    \"hotspot\": true,\n    \"path_details\": {\n        \"id_path_details\": \"{{last_id_path_details}}\",\n        \"id_malette\": \"{{last_id_path_details_malette}}\"\n    },\n    \"disabled\": false,\n    \"id_path_node\": \"{{last_id_path_node}}\"\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/path_node/{{last_id_path_node}}/{{last_id_path_node_malette}}",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"path_node",
+						"{{last_id_path_node}}",
+						"{{last_id_path_node_malette}}"
+					]
+				},
+				"description": "Create a path_node, from last panorama."
+			},
+			"response": []
+		},
+		{
+			"name": "path_node - retrieve",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c94d2657-75f4-48fc-a2b1-fdcea17b1b6c",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"postman.setEnvironmentVariable(\"last_id_path_node\", jsonData.id_path_node);",
+							"postman.setEnvironmentVariable(\"last_id_path_node_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id_malette\": \"{{last_id_path_node_malette}}\",\n    \"panorama\": {\n        \"id_malette\": \"{{last_id_panorama_malette}}\",\n        \"id_panorama\": \"{{last_id_panorama}}\"\n    },\n    \"hotspot\": true,\n    \"path_details\": {\n        \"id_path_details\": \"{{last_id_path_details}}\",\n        \"id_malette\": \"{{last_id_path_details_malette}}\"\n    },\n    \"disabled\": false,\n    \"id_path_node\": \"{{last_id_path_node}}\"\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/path_node/{{last_id_path_node}}/{{last_id_path_node_malette}}",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"path_node",
+						"{{last_id_path_node}}",
+						"{{last_id_path_node_malette}}"
+					]
+				},
+				"description": "Create a path_node, from last panorama."
+			},
+			"response": []
+		},
+		{
+			"name": "path_edge - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f39b48cc-460d-4f5d-9916-ab04d3e786e8",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Basic tests",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Setting env variable to be able to chain requests",
+							"//postman.setEnvironmentVariable(\"last_id_path_node\", jsonData.id_path_node);",
+							"//postman.setEnvironmentVariable(\"last_id_path_node_malette\", jsonData.id_malette);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"source_path_node\": {\n\t\t\"id_path_node\": \"{{last_id_path_node}}\",\n\t\t\"id_malette\": \"{{last_id_path_node_malette}}\"\n\t},\n\t\"dest_path_node\": {\n\t\t\"id_path_node\": \"{{last_id_path_node}}\",\n\t\t\"id_malette\": \"{{last_id_path_node_malette}}\"\n\t},\n\t\"path_details\": {\n\t\t\"id_path_details\": \"{{last_id_path_details}}\",\n\t\t\"id_malette\": \"{{last_id_path_details_malette}}\"\n\t}\n}"
+				},
+				"url": {
+					"raw": "http://opv_master:5000/path_edge",
+					"protocol": "http",
+					"host": [
+						"opv_master"
+					],
+					"port": "5000",
+					"path": [
+						"path_edge"
+					]
+				},
+				"description": "Create a path_edge."
+			},
+			"response": []
+		}
+	]
+}
