@@ -3,12 +3,14 @@ from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields, decorators, ValidationError
 import json
 
-from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge, Reconstruction, Shot, Path
+from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge, Reconstruction, Shot, Path, PathNode, PathDetails, PathEdge, PathNodesExtended, Virtualtour, VirtualtourPath, VirtualtourHihlight
 from dbrest.db import session
 
 __all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'LotWithSensorsSchema',
            'SensorsSchema', 'TileSchema', 'TrackEdgeSchema',
-           'ReconstructionSchema', 'ShotSchema', 'PathSchema']
+           'ReconstructionSchema', 'ShotSchema', 'PathSchema',
+           'PathNodeSchema', 'PathDetailsSchema', 'PathEdgeSchema',
+           'VirtualtourSchema', 'VirtualtourPathSchema', 'VirtualtourHihlightSchema']
 
 class BaseSchema(ModelSchema):
     def __init__(self, *args, **kwargs):
@@ -115,3 +117,42 @@ class ShotSchema(BaseSchema):
 class PathSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Path
+
+# ---- Virtual tour roads/paths ----
+class PathNodeSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = PathNode
+
+
+class PathDetailsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = PathDetails
+
+
+class PathEdgeSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = PathEdge
+
+
+class PathNodesExtendedSchema(BaseSchema):
+    gps_pos = GeoJSON()
+
+    class Meta(BaseSchema.Meta):
+        model = PathNodesExtended
+
+
+# ---- Virtual tours, final render data for viewer/embed ----
+class VirtualtourSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = Virtualtour
+
+
+class VirtualtourPathSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = VirtualtourPath
+
+
+class VirtualtourHihlightSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = VirtualtourHihlight
+

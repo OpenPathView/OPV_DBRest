@@ -7,4 +7,6 @@ session = scoped_session(sessionmaker(bind=engine))
 
 # Create DB model
 def create_all():
+    # creating schema (not including views)
     models.Base.metadata.create_all(engine)
+
