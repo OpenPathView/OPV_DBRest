@@ -12,10 +12,10 @@ setup(
     long_description=open('README.md').read(),
     dependency_links=[
         "git+https://github.com/OpenPathView/OPV_DBRest-client.git#egg=opv_api_client-0.2",
-        "git+https://github.com/OpenPathView/pg-dump-filtered@v0.2#egg=pg_dump_filtered"
+        "git+https://github.com/OpenPathView/pg-dump-filtered@v0.2#egg=pg_dump_filtered-0.2"
     ],
     install_requires=[
-        "GeoAlchemy2",
+        "GeoAlchemy2==0.5.0",
         "hug",
         "marshmallow-sqlalchemy",
         "SQLAlchemy",
