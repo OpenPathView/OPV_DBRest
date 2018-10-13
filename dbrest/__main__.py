@@ -16,8 +16,10 @@ Options:
 """
 
 import os
+import logging
 
 from docopt import docopt
+from dbrest.helpers.logging import setup_logging
 
 """
  Make environnement config for API.
@@ -31,7 +33,13 @@ def makeEnvironementConfig(arguments):
 def main():
     arguments = docopt(__doc__)
     debug = bool(arguments.get('--debug'))
-    #os.system(makeEnvironementConfig(arguments) + ' && hug -m dbrest.api -p ' + arguments['--port'])
+
+    # logger
+    setup_logging()
+    logging.getLogger("dbrest").setLevel(logging.DEBUG if debug else logging.INFO)
+    logger = logging.getLogger(__name__)
+
+    logger.info("Starting OPV API using gunicorn with following arguments : %r", arguments)
     os.system(makeEnvironementConfig(arguments) + ' && gunicorn -b 0.0.0.0:%s -w %s dbrest.api:__hug_wsgi__' % (arguments['--port'], arguments['--process']))
 
 if __name__ == "__main__":
