@@ -142,6 +142,8 @@ class Panorama(Base):
     id_cp_malette = sa.Column(sa.Integer, nullable=False)
     cp = relationship(Cp, backref=backref('panorama'))
 
+    active = sa.Column(sa.Boolean, nullable=True)
+
     __table_args__ = (
         sa.ForeignKeyConstraint(
             ['id_cp', 'id_cp_malette'],
