@@ -144,10 +144,17 @@ class Panorama(Base):
 
     active = sa.Column(sa.Boolean, nullable=True)
 
+    id_sensors_reconstructed = sa.Column(sa.Integer, nullable=True)
+    id_sensors_reconstructed_malette = sa.Column(sa.Integer, nullable=True)
+    sensors_reconstructed = relationship('Sensors', backref=backref('panorama', uselist=False))
+
     __table_args__ = (
         sa.ForeignKeyConstraint(
             ['id_cp', 'id_cp_malette'],
             ['cp.id_cp', 'cp.id_malette']),
+        sa.ForeignKeyConstraint(
+            ['id_sensors_reconstructed', 'id_sensors_reconstructed_malette'],
+            ['sensors.id_sensors', 'sensors.id_malette']),
     )
 
 
@@ -408,8 +415,6 @@ class PathNodesExtended(Base):
         ]). \
             select_from(PathNode.__table__. \
             join(Panorama.__table__). \
-            join(Cp.__table__). \
-            join(Lot.__table__). \
             join(Sensors.__table__))
     )
 
