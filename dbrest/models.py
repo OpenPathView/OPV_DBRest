@@ -23,11 +23,21 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from geoalchemy2 import Geography
 import json
+import re
 
 from dbrest.helpers import get_malette_id
 from dbrest.commons import view
 
 Base = declarative_base()
+
+
+"""
+Replace st_asgeojson() by nothing used in view creations.
+"""
+def selectRawReqRemoveGeoJson(selectReq):
+    # This ugly but I don't have time to investigate more on how SQLAlchemy select wrapper works !
+    # They make pretty ugly things with views and Geometry cols.
+    return re.sub(r'ST_AsGeoJSON\((.+?)?\)', r'\1', selectReq, flags=re.MULTILINE)
 
 
 class GeoJSONGeography(Geography):
@@ -180,6 +190,52 @@ class Tile(Base):
             ['id_panorama', 'id_panorama_malette'],
             ['panorama.id_panorama', 'panorama.id_malette']),
     )
+
+
+class PanoramaSensors(Base):
+    """ View of panorama with sensors data added """
+
+    reconstructedSensors = sa.orm.aliased(Sensors)
+    originalSensors = sa.orm.aliased(Sensors)
+    __table__ = view(
+        'panorama_sensors', Base.metadata,
+        sa.select([
+            # Panorama simple fields
+            Panorama.id_panorama,
+            Panorama.id_malette,
+            Panorama.id_cp,
+            Panorama.id_cp_malette,
+            Panorama.active,
+            Panorama.equirectangular_path,
+            Panorama.is_photosphere,
+            # Reconstructed sensors fields
+            reconstructedSensors.id_sensors.label('reconstructed_id_sensors'),
+            reconstructedSensors.id_malette.label('reconstructed_id_malette'),
+            reconstructedSensors.gps_pos.label('reconstructed_gps_pos'),
+            reconstructedSensors.degrees.label('reconstructed_degrees'),
+            reconstructedSensors.minutes.label('reconstructed_minutes'),
+            # Original sensors fields
+            originalSensors.id_sensors.label('original_id_sensors'),
+            originalSensors.id_malette.label('original_id_malette'),
+            originalSensors.gps_pos.label('original_gps_pos'),
+            originalSensors.degrees.label('original_degrees'),
+            originalSensors.minutes.label('original_minutes'),
+            # Campaigns ids
+            Campaign.id_campaign,
+            Campaign.id_malette.label('id_campaign_malette')
+        ]). \
+            select_from(Panorama.__table__. \
+            join(reconstructedSensors, sa.and_(Panorama.id_sensors_reconstructed==reconstructedSensors.id_sensors, Panorama.id_sensors_reconstructed_malette==reconstructedSensors.id_malette), isouter=True).\
+            join(Cp).\
+            join(Lot). \
+            join(Campaign). \
+            join(originalSensors, sa.and_(Lot.id_sensors==originalSensors.id_sensors, Lot.id_sensors_malette==originalSensors.id_malette))),
+        selectableRawReqfilter=selectRawReqRemoveGeoJson
+    )
+
+    __table__.primary_key = [__table__.c.id_panorama, __table__.c.id_malette]
+
+    __tablename__ = "panorama_sensors"
 
 
 class TrackEdge(Base):
@@ -390,6 +446,12 @@ class PathEdge(Base):
     id_path_details_malette = sa.Column(sa.Integer, nullable=False)
     path_details = relationship('PathDetails')
 
+    source_yaw_dest = sa.Column(sa.Float, nullable=True)
+    source_target_yaw_dest = sa.Column(sa.Float, nullable=True)
+
+    dest_yaw_source = sa.Column(sa.Float, nullable=True)
+    dest_target_yaw_source = sa.Column(sa.Float, nullable=True)
+
     __table_args__ = (
         sa.ForeignKeyConstraint(
             ['source_id_path_node', 'source_id_path_node_malette'],
@@ -402,20 +464,47 @@ class PathEdge(Base):
             ['path_details.id_path_details', 'path_details.id_malette']))
 
 
-class PathNodesExtended(Base):
+class PathNodeExtended(Base):
     """ View of path_node with sensors data added """
 
+    reconstructedSensors = sa.orm.aliased(Sensors)
+    originalSensors = sa.orm.aliased(Sensors)
     __table__ = view(
         'path_node_extended', Base.metadata,
         sa.select([
-            PathNode.id_path_node, PathNode.id_malette, PathNode.id_panorama, PathNode.id_panorama_malette,
-            PathNode.id_path_details, PathNode.id_path_details_malette, PathNode.disabled, PathNode.hotspot,
-            Sensors.gps_pos, Sensors.degrees, Sensors.minutes, Sensors.id_sensors,
-            Sensors.id_malette.label('id_sensors_malette')
+            # PathNode fields
+            PathNode.id_path_node,
+            PathNode.id_malette,
+            PathNode.id_panorama,
+            PathNode.id_panorama_malette,
+            PathNode.id_path_details,
+            PathNode.id_path_details_malette,
+            PathNode.disabled,
+            PathNode.hotspot,
+            # Reconstructed sensors
+            reconstructedSensors.id_sensors.label('reconstructed_id_sensors'),
+            reconstructedSensors.id_malette.label('reconstructed_id_malette'),
+            reconstructedSensors.gps_pos.label('reconstructed_gps_pos'),
+            reconstructedSensors.degrees.label('reconstructed_degrees'),
+            reconstructedSensors.minutes.label('reconstructed_minutes'),
+            # Original sensors
+            originalSensors.id_sensors.label('original_id_sensors'),
+            originalSensors.id_malette.label('original_id_malette'),
+            originalSensors.gps_pos.label('original_gps_pos'),
+            originalSensors.degrees.label('original_degrees'),
+            originalSensors.minutes.label('original_minutes')
         ]). \
             select_from(PathNode.__table__. \
-            join(Panorama.__table__). \
-            join(Sensors.__table__))
+                        join(Panorama). \
+                        join(reconstructedSensors,
+                             sa.and_(Panorama.id_sensors_reconstructed == reconstructedSensors.id_sensors,
+                                     Panorama.id_sensors_reconstructed_malette == reconstructedSensors.id_malette),
+                             isouter=True). \
+                        join(Cp). \
+                        join(Lot). \
+                        join(originalSensors, sa.and_(Lot.id_sensors == originalSensors.id_sensors,
+                                                      Lot.id_sensors_malette == originalSensors.id_malette))),
+        selectableRawReqfilter=selectRawReqRemoveGeoJson
     )
 
     __table__.primary_key = [__table__.c.id_path_node, __table__.c.id_malette]

@@ -3,14 +3,15 @@ from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields, decorators, ValidationError
 import json
 
-from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, TrackEdge, Reconstruction, Shot, Path, PathNode, PathDetails, PathEdge, PathNodesExtended, Virtualtour, VirtualtourPath, VirtualtourHihlight
+from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, PanoramaSensors, TrackEdge, Reconstruction, Shot, Path, PathNode, PathDetails, PathEdge, PathNodeExtended, Virtualtour, VirtualtourPath, VirtualtourHihlight
 from dbrest.db import session
 
 __all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'LotWithSensorsSchema',
-           'SensorsSchema', 'TileSchema', 'TrackEdgeSchema',
+           'SensorsSchema', 'TileSchema', 'PanoramaSensorsSchema', 'TrackEdgeSchema',
            'ReconstructionSchema', 'ShotSchema', 'PathSchema',
            'PathNodeSchema', 'PathDetailsSchema', 'PathEdgeSchema',
            'VirtualtourSchema', 'VirtualtourPathSchema', 'VirtualtourHihlightSchema']
+
 
 class BaseSchema(ModelSchema):
     def __init__(self, *args, **kwargs):
@@ -65,6 +66,7 @@ class BaseSchema(ModelSchema):
     class Meta:
         sqla_session = session
 
+
 class GeoJSON(fields.Field):
     def _deserialize(self, value, attr, data):
         try:
@@ -72,51 +74,72 @@ class GeoJSON(fields.Field):
         except json.JSONDecodeError:
             ValidationError('Not a valid GeoJSON', attr)
 
+
 class CampaignSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Campaign
+
 
 class CpSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Cp
 
+
 class LotSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Lot
+
 
 class LotWithSensorsSchema(BaseSchema):
     sensors = fields.Nested('SensorsSchema')
     class Meta(BaseSchema.Meta):
         model = Lot
 
+
 class PanoramaSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Panorama
+
+
 class SensorsSchema(BaseSchema):
     gps_pos = GeoJSON()
 
     class Meta(BaseSchema.Meta):
         model = Sensors
 
+
 class TileSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Tile
+
+
+class PanoramaSensorsSchema(BaseSchema):
+    reconstructed_gps_pos = GeoJSON()
+    original_gps_pos = GeoJSON()
+
+    class Meta(BaseSchema.Meta):
+        model = PanoramaSensors
+
 
 class TrackEdgeSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = TrackEdge
 
+
 class ReconstructionSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Reconstruction
+
 
 class ShotSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Shot
 
+
 class PathSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Path
+
 
 # ---- Virtual tour roads/paths ----
 class PathNodeSchema(BaseSchema):
@@ -134,11 +157,12 @@ class PathEdgeSchema(BaseSchema):
         model = PathEdge
 
 
-class PathNodesExtendedSchema(BaseSchema):
-    gps_pos = GeoJSON()
+class PathNodeExtendedSchema(BaseSchema):
+    reconstructed_gps_pos = GeoJSON()
+    original_gps_pos = GeoJSON()
 
     class Meta(BaseSchema.Meta):
-        model = PathNodesExtended
+        model = PathNodeExtended
 
 
 # ---- Virtual tours, final render data for viewer/embed ----
