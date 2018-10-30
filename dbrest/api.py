@@ -54,6 +54,7 @@ def generate_accessors(schm, version=1, name=None):
     path_get_one = path_get_all + "/{" + "}/{".join(pks_name) + "}"
     path_post = path_get_all
     path_put = path_get_one
+    path_delete = path_get_one
 
     def cant_find_ress(kwargs):
         pks_d = {pk: kwargs.get(pk) for pk in pks_name}
@@ -185,6 +186,31 @@ def generate_accessors(schm, version=1, name=None):
 
     hug.put(path_put)(put)
     hug.patch(path_put)(put)
+
+    # DELETE ressource
+    def delete_one(response, **kwargs):
+        logger.debug("DELETE call : %r", kwargs)
+
+        # Find ress and delete
+        try:
+            logger.debug("Trying to find the ressource that needs to be updated")
+            inst = schm.get_instance(kwargs)
+            schm.Meta.sqla_session.delete(inst)
+            schm.Meta.sqla_session.commit()  # commit to serv
+        except SQLAlchemyError as err:
+            logger.error("SQLAlchemy error while trying to find the ressource for delete : %r", err)
+            schm.Meta.sqla_session.rollback()  # uncommit ! It doesn't works ! :-(
+            inst = None
+            return "SQLAlchemy error while trying to find the ressource for delete : %r" % err
+
+        if inst is None:
+            logger.error("No ressource found for PUT returning 400 status.")
+            response.status = HTTP_400
+            return cant_find_ress(kwargs)
+
+        return {}
+
+    hug.delete(path_delete)(delete_one)
 
 @hug.get("/sensors/{id_sensors}/{id_malette}/within/{n}", version=1)
 def within(id_malette, id_sensors, n: hug.types.number, response):
