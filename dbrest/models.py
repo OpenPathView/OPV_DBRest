@@ -203,8 +203,8 @@ class PanoramaSensors(Base):
             # Panorama simple fields
             Panorama.id_panorama,
             Panorama.id_malette,
-            Panorama.id_cp,
-            Panorama.id_cp_malette,
+            Cp.id_cp.label('id_cp'), # Issu https://github.com/OpenPathView/OPV_DBRest/issues/56#issuecomment-434255649
+            Cp.id_malette.label('id_cp_malette'),
             Panorama.active,
             Panorama.equirectangular_path,
             Panorama.is_photosphere,
@@ -475,10 +475,10 @@ class PathNodeExtended(Base):
             # PathNode fields
             PathNode.id_path_node,
             PathNode.id_malette,
-            PathNode.id_panorama,
-            PathNode.id_panorama_malette,
-            PathNode.id_path_details,
-            PathNode.id_path_details_malette,
+            Panorama.id_panorama.label('id_panorama'),  # See https://github.com/OpenPathView/OPV_DBRest/issues/56#issuecomment-434255649
+            Panorama.id_malette.label('id_panorama_malette'),
+            PathDetails.id_path_details.label('id_path_details'),
+            PathDetails.id_malette.label('id_path_details_malette'),
             PathNode.disabled,
             PathNode.hotspot,
             # Reconstructed sensors
@@ -495,6 +495,9 @@ class PathNodeExtended(Base):
             originalSensors.minutes.label('original_minutes')
         ]). \
             select_from(PathNode.__table__. \
+                        join(PathDetails,
+                             sa.and_(PathDetails.id_path_details == PathNode.id_path_details,
+                                     PathDetails.id_malette == PathNode.id_path_details_malette)). \
                         join(Panorama). \
                         join(reconstructedSensors,
                              sa.and_(Panorama.id_sensors_reconstructed == reconstructedSensors.id_sensors,
