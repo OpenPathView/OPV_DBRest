@@ -468,6 +468,7 @@ class PathNodeExtended(Base):
             PathDetails.id_malette.label('id_path_details_malette'),
             PathNode.disabled,
             PathNode.hotspot,
+            PathNode.endpoint,
             # Reconstructed sensors
             reconstructedSensors.id_sensors.label('reconstructed_id_sensors'),
             reconstructedSensors.id_malette.label('reconstructed_id_malette'),
