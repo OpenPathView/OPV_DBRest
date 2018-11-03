@@ -385,6 +385,7 @@ class PathNode(Base):
 
     disabled = sa.Column(sa.Boolean, nullable=True)
     hotspot = sa.Column(sa.Boolean, nullable=True)
+    endpoint = sa.Column(sa.Boolean, nullable=True)
 
     __table_args__ = (
         sa.ForeignKeyConstraint(
@@ -404,28 +405,14 @@ class PathDetails(Base):
     name = sa.Column(sa.String(70))
     decription = sa.Column(sa.String(250))
 
-    id_start_node = sa.Column(sa.Integer, nullable=True)
-    id_start_node_malette = sa.Column(sa.Integer, nullable=True)
-    start_node = relationship(PathNode, foreign_keys=(id_start_node, id_start_node_malette))
-
-    id_stop_node = sa.Column(sa.Integer, nullable=True)
-    id_stop_node_malette = sa.Column(sa.Integer, nullable=True)
-    stop_node = relationship(PathNode, foreign_keys=(id_stop_node, id_stop_node_malette))
-
     id_campaign = sa.Column(sa.Integer, nullable=False)
     id_campaign_malette = sa.Column(sa.Integer, nullable=False)
     campaign = relationship(Campaign, foreign_keys=(id_campaign, id_campaign_malette))
 
     __table_args__ = (
         sa.ForeignKeyConstraint(
-            ['id_start_node', 'id_start_node_malette'],
-            ['path_node.id_path_node', 'path_node.id_malette']),
-        sa.ForeignKeyConstraint(
-            ['id_stop_node', 'id_stop_node_malette'],
-            ['path_node.id_path_node', 'path_node.id_malette']),
-        sa.ForeignKeyConstraint(
             ['id_campaign', 'id_campaign_malette'],
-            ['campaign.id_campaign', 'campaign.id_malette']))
+            ['campaign.id_campaign', 'campaign.id_malette']),)
 
 
 class PathEdge(Base):
@@ -436,11 +423,11 @@ class PathEdge(Base):
 
     source_id_path_node = sa.Column(sa.Integer, nullable=False)
     source_id_path_node_malette = sa.Column(sa.Integer, nullable=False)
-    source_path_node = relationship(PathNode, foreign_keys=(source_id_path_node, source_id_path_node_malette))
+    source_path_node = relationship(PathNode, backref=backref('edges_source', lazy=False), foreign_keys=(source_id_path_node, source_id_path_node_malette))
 
     dest_id_path_node = sa.Column(sa.Integer, nullable=False)
     dest_id_path_node_malette = sa.Column(sa.Integer, nullable=False)
-    dest_path_node = relationship(PathNode, foreign_keys=(dest_id_path_node, dest_id_path_node_malette))
+    dest_path_node = relationship(PathNode, backref=backref('edges_dest', lazy=False), foreign_keys=(dest_id_path_node, dest_id_path_node_malette))
 
     id_path_details = sa.Column(sa.Integer, nullable=False)
     id_path_details_malette = sa.Column(sa.Integer, nullable=False)
@@ -481,6 +468,7 @@ class PathNodeExtended(Base):
             PathDetails.id_malette.label('id_path_details_malette'),
             PathNode.disabled,
             PathNode.hotspot,
+            PathNode.endpoint,
             # Reconstructed sensors
             reconstructedSensors.id_sensors.label('reconstructed_id_sensors'),
             reconstructedSensors.id_malette.label('reconstructed_id_malette'),

@@ -55,6 +55,7 @@ def generate_accessors(schm, version=1, name=None):
     path_post = path_get_all
     path_put = path_get_one
     path_delete = path_get_one
+    path_delete_all = path_get_all
 
     def cant_find_ress(kwargs):
         pks_d = {pk: kwargs.get(pk) for pk in pks_name}
@@ -211,6 +212,23 @@ def generate_accessors(schm, version=1, name=None):
         return {}
 
     hug.delete(path_delete)(delete_one)
+
+    def delete_all(response, **kwargs):
+        # Return all instances of the ressource
+        logger.debug("Call to delete severeals ressources : %r", kwargs)
+        insts = schm.filter_instances(kwargs)
+        try:
+            for inst in insts:
+                schm.Meta.sqla_session.delete(inst)
+            schm.Meta.sqla_session.commit()  # commit to serv
+        except SQLAlchemyError as err:
+            logger.error("SQLAlchemy error while trying to find the ressource for delete : %r", err)
+            schm.Meta.sqla_session.rollback()  # uncommit ! It doesn't works ! :-(
+            return "SQLAlchemy error while trying to find the ressource for delete : %r" % err
+
+        return None
+
+    hug.delete(path_delete_all)(delete_all)
 
 @hug.get("/sensors/{id_sensors}/{id_malette}/within/{n}", version=1)
 def within(id_malette, id_sensors, n: hug.types.number, response):
