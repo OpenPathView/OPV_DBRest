@@ -34,7 +34,9 @@ upgradefKeySQL = """
 ALTER TABLE path_details
 DROP CONSTRAINT path_details_id_start_node_fkey,
 DROP CONSTRAINT path_details_id_stop_node_fkey;
+"""
 
+updateViewSQL = """
 DROP VIEW path_node_extended;
 CREATE VIEW public.path_node_extended AS
     SELECT path_node.id_path_node,
@@ -115,6 +117,8 @@ def upgrade(migrate_engine):
     pre_meta.tables['path_details'].columns['id_stop_node'].drop()
     pre_meta.tables['path_details'].columns['id_stop_node_malette'].drop()
     post_meta.tables['path_node'].columns['endpoint'].create()
+
+    migrate_engine.execute(updateViewSQL, multi=True)
 
 
 def downgrade(migrate_engine):
