@@ -40,7 +40,7 @@ def main():
     logger = logging.getLogger(__name__)
 
     logger.info("Starting OPV API using gunicorn with following arguments : %r", arguments)
-    os.system(makeEnvironementConfig(arguments) + ' && gunicorn -b 0.0.0.0:%s -w %s dbrest.api:__hug_wsgi__' % (arguments['--port'], arguments['--process']))
+    os.system(makeEnvironementConfig(arguments) + ' && gunicorn -b 0.0.0.0:%s -t 150 -w %s dbrest.api:__hug_wsgi__' % (arguments['--port'], arguments['--process']))
 
 if __name__ == "__main__":
     main()
