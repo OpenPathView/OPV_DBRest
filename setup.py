@@ -24,7 +24,9 @@ setup(
         "gunicorn",
         "sqlalchemy-migrate",
         "docopt",
-        "pg_dump_filtered"
+        "pg_dump_filtered",
+        "PyYAML",
+	"path.py"
     ],
     # Active la prise en compte du fichier MANIFEST.in
     include_package_data=True,

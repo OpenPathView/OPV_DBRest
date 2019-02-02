@@ -5,6 +5,24 @@ If you use postgresql you need to get
 
 With apt: `sudo apt-get install libpq-dev python3-dev`
 
+# Docker it
+
+Build it
+
+```
+docker-compose build
+```
+
+Run it
+
+```
+docker-compose up
+```
+
+You should have acces to the webservice
+
+http://127.0.0.1:5000/
+
 # Install it
 ```bash
 python setup.py install

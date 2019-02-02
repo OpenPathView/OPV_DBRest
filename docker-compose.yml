@@ -1,0 +1,21 @@
+version: '2'
+services:
+
+  postgres:
+    image: mdillon/postgis
+    environment:
+      POSTGRES_USER: opv
+      POSTGRES_PASSWORD: opv42
+      POSTGRES_DB: opv
+
+  dbrest:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      OPV_DBREST_USER: opv
+      OPV_DBREST_PASSWORD: opv42
+      OPV_DBREST_DB: opv
+      OPV_DBREST_DB_ADDRESS: postgres
+    ports:
+      - "5000:5000"
