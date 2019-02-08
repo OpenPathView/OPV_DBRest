@@ -3,14 +3,14 @@ from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields, decorators, ValidationError
 import json
 
-from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, PanoramaSensors, TrackEdge, Reconstruction, Shot, Path, PathNode, PathDetails, PathEdge, PathNodeExtended, Virtualtour, VirtualtourPath, VirtualtourHihlight
+from dbrest.models import Campaign, Cp, Lot, Panorama, Sensors, Tile, PanoramaSensors, TrackEdge, Reconstruction, Shot, Path, PathNode, PathDetails, PathEdge, PathNodeExtended, Virtualtour, VirtualtourPath, VirtualtourHighlight
 from dbrest.db import session
 
 __all__ = ['CampaignSchema', 'CpSchema', 'LotSchema', 'LotWithSensorsSchema',
            'SensorsSchema', 'TileSchema', 'PanoramaSensorsSchema', 'TrackEdgeSchema',
            'ReconstructionSchema', 'ShotSchema', 'PathSchema',
            'PathNodeSchema', 'PathDetailsSchema', 'PathEdgeSchema',
-           'VirtualtourSchema', 'VirtualtourPathSchema', 'VirtualtourHihlightSchema']
+           'VirtualtourSchema', 'VirtualtourPathSchema', 'VirtualtourHighlightSchema']
 
 
 class BaseSchema(ModelSchema):
@@ -176,7 +176,7 @@ class VirtualtourPathSchema(BaseSchema):
         model = VirtualtourPath
 
 
-class VirtualtourHihlightSchema(BaseSchema):
+class VirtualtourHighlightSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
-        model = VirtualtourHihlight
+        model = VirtualtourHighlight
 
