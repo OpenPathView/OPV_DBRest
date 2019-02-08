@@ -538,7 +538,7 @@ class VirtualtourPath(Base):
             ['path_details.id_path_details', 'path_details.id_malette']))
 
 
-class VirtualtourHihlight(Base):
+class VirtualtourHighlight(Base):
     """ Interesting points for the virtual tour """
     __tablename__ = "virtualtour_highlight"
     id_virtualtour_highlight = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
