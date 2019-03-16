@@ -101,8 +101,8 @@ def upgrade(migrate_engine):
     pre_meta.bind = migrate_engine
     post_meta.bind = migrate_engine
 
-    post_meta.tables['panorama'].columns['has_hole'].create()
-    post_meta.tables['lot'].columns['is_blur'].create()
+    post_meta.tables['panorama'].columns['has_hole'].create(table=post_meta.tables['panorama'].columns['has_hole'].table)
+    post_meta.tables['lot'].columns['is_blur'].create(table=post_meta.tables['lot'].columns['is_blur'].table)
 
     migrate_engine.execute(upgrade_view, multi=True)
 
