@@ -102,6 +102,8 @@ class Lot(Base):
     id_tile_malette = sa.Column(sa.Integer, nullable=True)
     tile = relationship('Tile')
 
+    is_blur = sa.Column(sa.Boolean, nullable=True, default=False)
+
     __table_args__ = (
         sa.ForeignKeyConstraint(
             ['id_campaign', 'id_campaign_malette'],
@@ -158,6 +160,8 @@ class Panorama(Base):
     id_sensors_reconstructed_malette = sa.Column(sa.Integer, nullable=True)
     sensors_reconstructed = relationship('Sensors', backref=backref('panorama', uselist=False))
 
+    has_hole = sa.Column(sa.Boolean, nullable=True, default=False)
+
     __table_args__ = (
         sa.ForeignKeyConstraint(
             ['id_cp', 'id_cp_malette'],
@@ -208,6 +212,7 @@ class PanoramaSensors(Base):
             Panorama.active,
             Panorama.equirectangular_path,
             Panorama.is_photosphere,
+            Panorama.has_hole,
             # Reconstructed sensors fields
             reconstructedSensors.id_sensors.label('reconstructed_id_sensors'),
             reconstructedSensors.id_malette.label('reconstructed_id_malette'),
