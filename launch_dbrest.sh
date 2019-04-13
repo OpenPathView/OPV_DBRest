@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-until PGPASSWORD=${OPV_DBREST_PASSWORD} psql -h "${OPV_DBREST_USER}" -U "postgres" -c '\q'; do
+until PGPASSWORD=${OPV_DBREST_PASSWORD} psql -h "${OPV_DBREST_DB_ADDRESS}" -U "${OPV_DBREST_USER}" -c '\q'; do
   >&2 echo "Postgres is unavailable - sleeping"
   sleep 1
 done
