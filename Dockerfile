@@ -1,6 +1,6 @@
 FROM python:3.6
 
-RUN apt-get update && apt-get install -y libpq-dev python3-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libpq-dev python3-dev postgresql-client && rm -rf /var/lib/apt/lists/*
 
 ENV OPV_DBREST_ID_MALETTE 42
 ENV OPV_DBREST_PORT 5000
