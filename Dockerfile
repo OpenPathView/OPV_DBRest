@@ -19,10 +19,6 @@ python3 setup.py install
 
 EXPOSE ${OPV_DBREST_PORT}:${OPV_DBREST_PORT}
 
-WORKDIR /
-
-RUN rm -rf /source/DBRest
-
 ENV LC_CTYPE "en_US.UTF-8"
 
 
